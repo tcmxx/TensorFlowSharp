@@ -10,15 +10,13 @@
 //
 // Guidaance on doing language bindings for Tensorflow:
 // https://www.tensorflow.org/versions/r0.11/how_tos/language_bindings/
-//
-//
+
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Globalization;
 using System.Linq;
 
-// We use this TF_Xxx as the native "TF_Xxx *" as those are opaque
 using TF_Status = System.IntPtr;
 using TF_SessionOptions = System.IntPtr;
 using TF_Graph = System.IntPtr;
@@ -43,8 +41,6 @@ namespace TensorFlow
 		public const string TensorFlowLibrary = "libtensorflow";
 
 		internal static string GetStr (this IntPtr x) => Marshal.PtrToStringAnsi (x);
-
-
 	}
 
 	/// <summary>
@@ -94,14 +90,14 @@ namespace TensorFlow
 		{
 			unsafe
 			{
-				if (sizeof (IntPtr) == 4) {
+				if (sizeof (IntPtr) == 4)
+                {
 					Console.Error.WriteLine (
 						"The TensorFlow native libraries were compiled in 64 bit mode, you must run in 64 bit mode\n" +
 						"With Mono, do that with mono --arch=64 executable.exe, if using an IDE like MonoDevelop,\n" +
 						"Xamarin Studio or Visual Studio for Mac, Build/Compiler settings, make sure that " +
 						"\"Platform Target\" has x64 selected.");
 					throw new Exception ();
-
 				}
 			}
 		}
@@ -2138,7 +2134,6 @@ namespace TensorFlow
 				Fetch (operation);
 				return Run (status) [0];
 			}
-
 		}
 
 		/// <summary>
@@ -2780,7 +2775,4 @@ namespace TensorFlow
 			return new TFShape (full);
 		}
 	}
-
-
-
 }

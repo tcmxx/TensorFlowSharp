@@ -39,7 +39,7 @@ using System.Collections.Generic;
 
 namespace ExampleInceptionInference
 {
-	class MainClass
+	public class Program
 	{
 		static void Error (string msg)
 		{
@@ -53,30 +53,37 @@ namespace ExampleInceptionInference
 		}
 
 		static bool jagged = true;
-
 		static OptionSet options = new OptionSet ()
 		{
 			{ "m|dir=",  "Specifies the directory where the model and labels are stored", v => dir = v },
 			{ "h|help", v => Help () },
-
 			{ "amulti", "Use multi-dimensional arrays instead of jagged arrays", v => jagged = false }
 		};
+        static string dir, modelFile, labelsFile;
 
-
-		static string dir, modelFile, labelsFile;
 		public static void Main (string [] args)
 		{
 			var files = options.Parse (args);
-			if (dir == null) {
-				dir = "/tmp";
-				//Error ("Must specify a directory with -m to store the training data");
+			if (dir == null)
+            {
+				dir = Environment.CurrentDirectory;
 			}
 
-			//if (files == null || files.Count == 0)
-			//	Error ("No files were specified");
-
-			if (files.Count == 0)
-				files = new List<string> () { "/tmp/demo.jpg" };
+            if (files.Count == 0)
+            {
+                files = new List<string>();
+                string[] fis = Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "datas"));
+                foreach(string name in fis)
+                {
+                    string lower = name.ToLower();
+                    if(lower.EndsWith("jpg") || lower.EndsWith("png"))
+                    {
+                        files.Add(name);
+                    }
+                }
+                if (files.Count == 0)
+                    Error("no input files");
+            }
 			
 			ModelFiles (dir);
 
@@ -86,67 +93,81 @@ namespace ExampleInceptionInference
 			var model = File.ReadAllBytes (modelFile);
 
 			graph.Import (model, "");
-			using (var session = new TFSession (graph)) {
-				var labels = File.ReadAllLines (labelsFile);
+            using (var session = new TFSession(graph))
+            {
+                var labels = File.ReadAllLines(labelsFile);
 
-				foreach (var file in files) {
-					// Run inference on the image files
-					// For multiple images, session.Run() can be called in a loop (and
-					// concurrently). Alternatively, images can be batched since the model
-					// accepts batches of image data as input.
-					var tensor = CreateTensorFromImageFile (file);
+                foreach (var file in files)
+                {
+                    // Run inference on the image files
+                    // For multiple images, session.Run() can be called in a loop (and
+                    // concurrently). Alternatively, images can be batched since the model
+                    // accepts batches of image data as input.
+                    var tensor = CreateTensorFromImageFile(file);
 
-					var runner = session.GetRunner ();
-					runner.AddInput (graph ["input"] [0], tensor).Fetch (graph ["output"] [0]);
-					var output = runner.Run ();
-					// output[0].Value() is a vector containing probabilities of
-					// labels for each image in the "batch". The batch size was 1.
-					// Find the most probably label index.
+                    var runner = session.GetRunner();
+                    runner.AddInput(graph["input"][0], tensor).Fetch(graph["output"][0]);
+                    var output = runner.Run();
+                    // output[0].Value() is a vector containing probabilities of
+                    // labels for each image in the "batch". The batch size was 1.
+                    // Find the most probably label index.
 
-					var result = output [0];
-					var rshape = result.Shape;
-					if (result.NumDims != 2 || rshape [0] != 1) {
-						var shape = "";
-						foreach (var d in rshape) {
-							shape += $"{d} ";
-						}
-						shape = shape.Trim ();
-						Console.WriteLine ($"Error: expected to produce a [1 N] shaped tensor where N is the number of labels, instead it produced one with shape [{shape}]");
-						Environment.Exit (1);
-					}
+                    var result = output[0];
+                    var rshape = result.Shape;
+                    if (result.NumDims != 2 || rshape[0] != 1)
+                    {
+                        var shape = "";
+                        foreach (var d in rshape)
+                        {
+                            shape += $"{d} ";
+                        }
+                        shape = shape.Trim();
+                        Console.WriteLine($"Error: expected to produce a [1 N] shaped tensor where N is the number of labels, instead it produced one with shape [{shape}]");
+                        Environment.Exit(1);
+                    }
 
-					// You can get the data in two ways, as a multi-dimensional array, or arrays of arrays, 
-					// code can be nicer to read with one or the other, pick it based on how you want to process
-					// it
-					bool jagged = true;
+                    // You can get the data in two ways, as a multi-dimensional array, or arrays of arrays, 
+                    // code can be nicer to read with one or the other, pick it based on how you want to process
+                    // it
+                    bool jagged = true;
 
-					var bestIdx = 0;
-					float p = 0, best = 0;
+                    int bestIdx = 0;
+                    float best = 0;
 
-					if (jagged) {
-						var probabilities = ((float [] [])result.GetValue (jagged: true)) [0];
-						for (int i = 0; i < probabilities.Length; i++) {
-							if (probabilities [i] > best) {
-								bestIdx = i;
-								best = probabilities [i];
-							}
-						}
+                    if (jagged)
+                    {
+                        var probabilities = ((float[][])result.GetValue(jagged: true))[0];
+                        for (int i = 0; i < probabilities.Length; i++)
+                        {
+                            if (probabilities[i] > best)
+                            {
+                                bestIdx = i;
+                                best = probabilities[i];
+                            }
+                        }
 
-					} else {
-						var val = (float [,])result.GetValue (jagged: false);	
+                    }
+                    else
+                    {
+                        var val = (float[,])result.GetValue(jagged: false);
 
-						// Result is [1,N], flatten array
-						for (int i = 0; i < val.GetLength (1); i++) {
-							if (val [0, i] > best) {
-								bestIdx = i;
-								best = val [0, i];
-							}
-						}
-					}
+                        // Result is [1,N], flatten array
+                        for (int i = 0; i < val.GetLength(1); i++)
+                        {
+                            if (val[0, i] > best)
+                            {
+                                bestIdx = i;
+                                best = val[0, i];
+                            }
+                        }
+                    }
 
-					Console.WriteLine ($"{file} best match: [{bestIdx}] {best * 100.0}% {labels [bestIdx]}");
-				}
-			}
+                    Console.WriteLine($"{Path.GetFileName(file).PadRight(20)} best match: [{bestIdx.ToString().PadRight(3)}] {(best * 100.0).ToString("0.00").PadRight(6)}%   {labels[bestIdx]}");
+                }
+            }
+
+            Console.WriteLine("Tests finished");
+            Console.ReadLine();
 		}
 
 		// Convert the image in filename to a Tensor suitable as input to the Inception model.
@@ -161,17 +182,14 @@ namespace ExampleInceptionInference
 			TFOutput input, output;
 
 			// Construct a graph to normalize the image
-			ConstructGraphToNormalizeImage (out graph, out input, out output);
+			ConstructGraphToNormalizeImage (out graph, out input, out output, file);
 
-			// Execute that graph to normalize this one image
-			using (var session = new TFSession (graph)) {
-				var normalized = session.Run (
-					     inputs: new [] { input },
-					     inputValues: new [] { tensor },
-					     outputs: new [] { output });
-
-				return normalized [0];
-			}
+            // Execute that graph to normalize this one image
+            using (var session = new TFSession(graph))
+            {
+                var normalized = session.Run(new[] { input }, new[] { tensor }, new[] { output });
+                return normalized[0];
+            }
 		}
 
 		// The inception model takes as input the image described by a Tensor in a very
@@ -181,7 +199,7 @@ namespace ExampleInceptionInference
 		// This function constructs a graph of TensorFlow operations which takes as
 		// input a JPEG-encoded string and returns a tensor suitable as input to the
 		// inception model.
-		static void ConstructGraphToNormalizeImage (out TFGraph graph, out TFOutput input, out TFOutput output)
+		static void ConstructGraphToNormalizeImage (out TFGraph graph, out TFOutput input, out TFOutput output, string filename)
 		{
 			// Some constants specific to the pre-trained model at:
 			// https://storage.googleapis.com/download.tensorflow.org/models/inception5h.zip
@@ -198,16 +216,41 @@ namespace ExampleInceptionInference
 			graph = new TFGraph ();
 			input = graph.Placeholder (TFDataType.String);
 
-			output = graph.Div (
-				x: graph.Sub (
-					x: graph.ResizeBilinear (
-						images: graph.ExpandDims (
-							input: graph.Cast (
-								graph.DecodeJpeg (contents: input, channels: 3), DstT: TFDataType.Float),
-							dim: graph.Const (0, "make_batch")),
-						size: graph.Const (new int [] { W, H }, "size")),
-					y: graph.Const (Mean, "mean")),
-				y: graph.Const (Scale, "scale"));
+            TFOutput decoded;
+            if(filename.EndsWith("jpg", StringComparison.CurrentCultureIgnoreCase))
+            {
+                decoded = graph.DecodeJpeg(input, channels: 3);
+            }
+            else if(filename.EndsWith("png", StringComparison.CurrentCultureIgnoreCase))
+            {
+                decoded = graph.DecodePng(input, channels: 3);
+            }
+            else if(filename.EndsWith("bmp", StringComparison.CurrentCultureIgnoreCase))
+            {
+                decoded = graph.DecodePng(input, channels: 3);
+            }
+            else
+            {
+                throw new NotImplementedException($"file format not supported {filename}");
+            }
+
+			output = graph.Div 
+            (
+                graph.Sub 
+                (
+                    graph.ResizeBilinear 
+                    (
+                        graph.ExpandDims 
+                        (
+                            graph.Cast (decoded, TFDataType.Float),
+                            graph.Const (0, "make_batch")
+                        ),
+                        graph.Const (new int [] { W, H }, "size")
+                    ),
+                    graph.Const (Mean, "mean")
+                ),
+                graph.Const (Scale, "scale")
+            );
 		}
 
 		//
@@ -225,10 +268,13 @@ namespace ExampleInceptionInference
 				return;
 
 			Directory.CreateDirectory (dir);
-			var wc = new WebClient ();
-			wc.DownloadFile (url, zipfile);
-			ZipFile.ExtractToDirectory (zipfile, dir);
-			File.Delete (zipfile);
+
+            using (var wc = new WebClient())
+            {
+                wc.DownloadFile(url, zipfile);
+                ZipFile.ExtractToDirectory(zipfile, dir);
+                File.Delete(zipfile);
+            }
 		}
 	}
 }
