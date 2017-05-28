@@ -13,7 +13,6 @@ using TF_Tensor = System.IntPtr;
 
 namespace TensorFlow
 {
-
 	/// <summary>
 	/// TFTensor holds a multi-dimensional array of elements of a single data type.
 	/// </summary>
@@ -49,7 +48,7 @@ namespace TensorFlow
 			Marshal.FreeHGlobal (data);
 		}
 
-		internal static void FreeTensorHandle (IntPtr data, IntPtr len, IntPtr closure)
+		internal static void FreeTensorHandle(IntPtr data, IntPtr len, IntPtr closure)
 		{
 			var gch = GCHandle.FromIntPtr (closure);
 			gch.Free ();
@@ -230,56 +229,64 @@ namespace TensorFlow
 			if (array == null)
 				throw new ArgumentNullException (nameof (array));
 			// TODO: ensure that we do not have arrays of arrays.
-			var t = array.GetType ().GetElementType ();
-			var tc = Type.GetTypeCode (t);
+            //int
+			Type t = array.GetType().GetElementType();
 			TFDataType dt;
 			long size = 0;
-			switch (tc) {
-			case TypeCode.Boolean:
-				dt = TFDataType.Bool;
-				size = 1;
-				break;
-			case TypeCode.SByte:
-				dt = TFDataType.Int8;
-				size = 1;
-				break;
-			case TypeCode.Byte:
-				dt = TFDataType.UInt8;
-				size = 1;
-				break;
-			case TypeCode.Int16:
-				dt = TFDataType.Int16;
-				size = 2;
-				break;
-			case TypeCode.UInt16:
-				dt = TFDataType.UInt16;
-				size = 2;
-				break;
-			case TypeCode.Int32:
-				dt = TFDataType.Int32;
-				size = 4;
-				break;
-			case TypeCode.Int64:
-				dt = TFDataType.Int64;
+            if (t == typeof(Boolean))
+            {
+                dt = TFDataType.Bool;
+                size = 1;
+            }
+            else if(t == typeof(SByte))
+            {
+                dt = TFDataType.Int8;
+                size = 1;
+            }
+            else if(t == typeof(Byte))
+            {
+                dt = TFDataType.UInt8;
+                size = 1;
+            }
+            else if(t == typeof(Int16))
+            {
+                dt = TFDataType.Int16;
+                size = 2;
+            }
+            else if(t == typeof(UInt16))
+            {
+                dt = TFDataType.UInt16;
+                size = 2;
+            }else if(t == typeof(Int32))
+            {
+                dt = TFDataType.Int32;
+                size = 4;
+            }
+            else if(t == typeof(Int64))
+            {
+                dt = TFDataType.Int64;
 				size = 8;
-				break;
-			case TypeCode.Single:
-				dt = TFDataType.Float;
-				size = 4;
-				break;
-			case TypeCode.Double:
-				dt = TFDataType.Double;
-				size = 8;
-				break;
-			default:
-				// Check types that are not handled by the typecode
-				if (t.IsAssignableFrom (typeof (Complex))) {
-					size = 16;
-					dt = TFDataType.Complex128;
-				} else
-					throw new ArgumentException ($"The data type {t} is not supported");
-				break;
-			}
+            }
+            else if(t == typeof(Single))
+            {
+                dt = TFDataType.Float;
+                size = 4;
+            }
+            else if(t == typeof(Double))
+            {
+                dt = TFDataType.Double;
+                size = 8;
+            }
+            else
+            {
+                if (t == typeof(Complex))
+                {
+                    dt = TFDataType.Complex128;
+                    size = 16;
+                }
+                else
+                    throw new ArgumentException($"The data type {t} is not supported");
+            }
 
 			var dims = new long [array.Rank];
 			for (int i = 0; i < array.Rank; i++) {
@@ -608,7 +615,6 @@ namespace TensorFlow
 		unsafe public static implicit operator TFTensor (Array array)
 		{
 			return new TFTensor (array);
-
 		}
 
 		// General purpose constructor, specifies data type and gets pointer to buffer
@@ -804,7 +810,7 @@ namespace TensorFlow
 
 		unsafe static void Copy (IntPtr src, void* target, int size)
 		{
-			Buffer.MemoryCopy ((void*)src, target, size, size);
+			NativeBinding.MemoryCopy((void*)src, target, size, size);
 		}
 
 		static unsafe void FetchFlatArray (Array target, TFDataType dt, IntPtr data)
@@ -875,9 +881,11 @@ namespace TensorFlow
 
 			// If we are at the last node
 			if (level == shape.Length - 1) {
-				target = Array.CreateInstance (t, shape [level]);
+                //int
+				target = Array.CreateInstance (t, (int)shape [level]);
 
-				for (long l = 0; l < shape [level]; l++)
+                //int
+				for (int l = 0; l < shape [level]; l++)
 					switch (dt) {
 					case TFDataType.Float:
 						target.SetValue ((*(float*)data), l);
@@ -930,16 +938,19 @@ namespace TensorFlow
 					for (int i = 0; i < itop; i++) {
 						var childArray = FetchJaggedArray (t, dt, ref data, shape, level + 1);
 						if (target == null)
-							target = Array.CreateInstance (childArray.GetType (), shape [level]);
+                            //int
+							target = Array.CreateInstance (childArray.GetType (), (int)shape [level]);
 
 						target.SetValue (childArray, i);
 					}
 				} else {
-					for (long l = 0; l < top; l++) {
+                    //int
+					for (int l = 0; l < top; l++) {
 
 						var chidArray = FetchJaggedArray (t, dt, ref data, shape, level + 1);
 						if (target == null)
-							target = Array.CreateInstance (chidArray.GetType (), shape [level]);
+                            //int
+							target = Array.CreateInstance (chidArray.GetType (), (int)shape [level]);
 
 						target.SetValue (chidArray, l);
 					}
@@ -1038,7 +1049,8 @@ namespace TensorFlow
 				return null;
 
 			if (dims == 1) {
-				var result = Array.CreateInstance (t, Shape [0]);
+                //int
+				var result = Array.CreateInstance (t, (int)Shape [0]);
 				FetchFlatArray (result, TensorType, Data);
 				return result;
 			} else {
@@ -1046,7 +1058,13 @@ namespace TensorFlow
 					IntPtr data = Data;
 					return FetchJaggedArray (t, TensorType, ref data, Shape);
 				} else {
-					var result = Array.CreateInstance (t, Shape);
+                    //int
+                    int[] s = new int[Shape.Length];
+                    for (int i = 0; i < Shape.Length; i++)
+                    {
+                        s[i] = (int)Shape[i];
+                    }
+					var result = Array.CreateInstance (t, s);
 					FetchMultiDimensionalArray (result, TensorType, Data, Shape);
 					return result;
 				}

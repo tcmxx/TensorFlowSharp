@@ -36,6 +36,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ExampleInceptionInference
 {
@@ -63,6 +64,10 @@ namespace ExampleInceptionInference
 
 		public static void Main (string [] args)
 		{
+            TensorFlowSharp.Windows.NativeBinding.Init();
+
+            Console.WriteLine("Preparing");
+            Console.WriteLine("TF Version: " + TFCore.Version);
 			var files = options.Parse (args);
 			if (dir == null)
             {
@@ -95,6 +100,10 @@ namespace ExampleInceptionInference
 			graph.Import (model, "");
             using (var session = new TFSession(graph))
             {
+                Console.WriteLine("model start");
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
                 var labels = File.ReadAllLines(labelsFile);
 
                 foreach (var file in files)
@@ -164,10 +173,11 @@ namespace ExampleInceptionInference
 
                     Console.WriteLine($"{Path.GetFileName(file).PadRight(20)} best match: [{bestIdx.ToString().PadRight(3)}] {(best * 100.0).ToString("0.00").PadRight(6)}%   {labels[bestIdx]}");
                 }
-            }
 
-            Console.WriteLine("Tests finished");
-            Console.ReadLine();
+                Console.WriteLine($"Tests finished [{sw.ElapsedMilliseconds}]");
+                sw.Stop();
+                Console.ReadLine();
+            }
 		}
 
 		// Convert the image in filename to a Tensor suitable as input to the Inception model.

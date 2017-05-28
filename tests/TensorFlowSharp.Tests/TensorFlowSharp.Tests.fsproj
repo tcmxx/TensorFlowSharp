@@ -66,11 +66,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <ProjectReference Include="..\..\TensorFlowSharp\TensorFlowSharp.csproj">
-      <Name>TensorFlowSharp</Name>
-      <Project>{0264c321-34f4-46af-819e-168d1e597232}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <Reference Include="System.ValueTuple">
       <HintPath>..\..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -96,6 +91,18 @@
     <Reference Include="xunit.runner.reporters.net452">
       <HintPath>..\..\packages\xunit.runner.console.2.2.0\tools\xunit.runner.reporters.net452.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TensorFlowSharp.Windows\TensorFlowSharp.Windows.csproj">
+      <Name>TensorFlowSharp.Windows</Name>
+      <Project>{9a5fc834-a8df-4410-a21d-cf60b4fcacb7}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TensorFlowSharp\TensorFlowSharp.csproj">
+      <Name>TensorFlowSharp</Name>
+      <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

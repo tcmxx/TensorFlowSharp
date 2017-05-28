@@ -15,7 +15,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <ExternalConsole>true</ExternalConsole>
     <PlatformTarget>x64</PlatformTarget>
@@ -67,9 +67,17 @@
     <Reference Include="System.ValueTuple">
       <HintPath>..\..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TensorFlowSharp.Windows\TensorFlowSharp.Windows.csproj">
+      <Name>TensorFlowSharp.Windows</Name>
+      <Project>{9a5fc834-a8df-4410-a21d-cf60b4fcacb7}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\TensorFlowSharp\TensorFlowSharp.csproj">
-      <Project>{0264C321-34F4-46AF-819E-168D1E597232}</Project>
       <Name>TensorFlowSharp</Name>
+      <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
 </Project>

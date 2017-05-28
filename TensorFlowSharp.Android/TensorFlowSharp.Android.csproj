@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8D36690C-0079-4A33-915D-68D98B9A7117}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TensorFlowSharp.Android</RootNamespace>
+    <AssemblyName>TensorFlowSharp.Android</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Mono.Android" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="NativeBinding.cs" />
+    <Compile Include="Resources\Resource.Designer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidNativeLibrary Include="..\Native\libandroid_tensorflow_lib.lo\arm64-v8a\libandroid_tensorflow_lib.lo">
+      <Link>Native\arm64-v8a\libandroid_tensorflow_lib.lo</Link>
+    </AndroidNativeLibrary>
+    <AndroidNativeLibrary Include="..\Native\libandroid_tensorflow_lib.lo\armeabi-v7a\libandroid_tensorflow_lib.lo">
+      <Link>Native\armeabi-v7a\libandroid_tensorflow_lib.lo</Link>
+    </AndroidNativeLibrary>
+    <AndroidNativeLibrary Include="..\Native\libandroid_tensorflow_lib.lo\x86\libandroid_tensorflow_lib.lo">
+      <Link>Native\x86\libandroid_tensorflow_lib.lo</Link>
+    </AndroidNativeLibrary>
+    <AndroidNativeLibrary Include="..\Native\libandroid_tensorflow_lib.lo\x86_64\libandroid_tensorflow_lib.lo">
+      <Link>Native\x86_64\libandroid_tensorflow_lib.lo</Link>
+    </AndroidNativeLibrary>
+    <AndroidNativeLibrary Include="..\Native\libtensorflow_inference.so\arm64-v8a\libtensorflow.so">
+      <Link>Native\arm64-v8a\libtensorflow.so</Link>
+    </AndroidNativeLibrary>
+    <AndroidNativeLibrary Include="..\Native\libtensorflow_inference.so\armeabi-v7a\libtensorflow.so">
+      <Link>Native\armeabi-v7a\libtensorflow.so</Link>
+    </AndroidNativeLibrary>
+    <AndroidNativeLibrary Include="..\Native\libtensorflow_inference.so\x86\libtensorflow.so">
+      <Link>Native\x86\libtensorflow.so</Link>
+    </AndroidNativeLibrary>
+    <AndroidNativeLibrary Include="..\Native\libtensorflow_inference.so\x86_64\libtensorflow.so">
+      <Link>Native\x86_64\libtensorflow.so</Link>
+    </AndroidNativeLibrary>
+    <None Include="Resources\AboutResources.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Values\Strings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TensorFlowSharp\TensorFlowSharp.csproj">
+      <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
+      <Name>TensorFlowSharp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -49,17 +49,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TensorFlowSharp\TensorFlowSharp.csproj">
-      <Project>{0264C321-34F4-46AF-819E-168D1E597232}</Project>
-      <Name>TensorFlowSharp</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="ImageCompression.fs" />
     <Content Include="example.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TensorFlowSharp.Windows\TensorFlowSharp.Windows.csproj">
+      <Name>TensorFlowSharp.Windows</Name>
+      <Project>{9a5fc834-a8df-4410-a21d-cf60b4fcacb7}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TensorFlowSharp\TensorFlowSharp.csproj">
+      <Name>TensorFlowSharp</Name>
+      <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(FSharpTargetsPath)" />
 </Project>

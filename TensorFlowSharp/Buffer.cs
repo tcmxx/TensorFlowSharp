@@ -52,17 +52,18 @@ namespace TensorFlow
 
 		unsafe public TFBuffer () : base ((IntPtr)TF_NewBuffer ())
 		{
-		}
 
-		/// <summary>
-		/// Signature of the method that is invoked to release the data.  
-		/// </summary>
-		/// <remarks>
-		/// Methods of this signature are invoked with the data pointer and the
-		/// lenght pointer when then TFBuffer no longer needs to hold on to the
-		/// data.
-		/// </remarks>
-		public delegate void BufferReleaseFunc (IntPtr data, IntPtr lenght);
+        }
+
+        /// <summary>
+        /// Signature of the method that is invoked to release the data.  
+        /// </summary>
+        /// <remarks>
+        /// Methods of this signature are invoked with the data pointer and the
+        /// lenght pointer when then TFBuffer no longer needs to hold on to the
+        /// data.
+        /// </remarks>
+        public delegate void BufferReleaseFunc (IntPtr data, IntPtr lenght);
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:TensorFlow.TFBuffer"/> by wrapping the unmanaged resource pointed by the buffer.
@@ -89,26 +90,28 @@ namespace TensorFlow
 
 		internal static void FreeBlock (IntPtr data, IntPtr lenght)
 		{
-			Marshal.FreeHGlobal (data);
+			Marshal.FreeHGlobal(data);
 		}
 
 		static IntPtr FreeBufferFunc;
 
-		static TFBuffer ()
-		{
-			FreeBufferFunc = Marshal.GetFunctionPointerForDelegate<BufferReleaseFunc> (FreeBlock);
-		}
+        static TFBuffer()
+        {
+            //int
+            //FreeBufferFunc = Marshal.GetFunctionPointerForDelegate<BufferReleaseFunc> (FreeBlock);
+            FreeBufferFunc = Marshal.GetFunctionPointerForDelegate(new BufferReleaseFunc(FreeBlock));
+        }
 
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:TensorFlow.TFBuffer"/> by making a copy of the provided byte array.
-		/// </summary>
-		/// <param name="buffer">Buffer of data that will be wrapped.</param>
-		/// <remarks>
-		/// This constructor makes a copy of the data into an unmanaged buffer, 
-		/// so the byte array is not pinned.
-		/// </remarks>
-		public TFBuffer (byte [] buffer) : this (buffer, 0, buffer.Length) { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:TensorFlow.TFBuffer"/> by making a copy of the provided byte array.
+        /// </summary>
+        /// <param name="buffer">Buffer of data that will be wrapped.</param>
+        /// <remarks>
+        /// This constructor makes a copy of the data into an unmanaged buffer, 
+        /// so the byte array is not pinned.
+        /// </remarks>
+        public TFBuffer (byte [] buffer) : this (buffer, 0, buffer.Length) { }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:TensorFlow.TFBuffer"/> by making a copy of the provided byte array.
@@ -126,6 +129,7 @@ namespace TensorFlow
 				throw new ArgumentException ("start");
 			if (count < 0 || count > buffer.Length - start)
 				throw new ArgumentException ("count");
+
 			unsafe
 			{
 				LLBuffer* buf = LLBuffer;
@@ -144,7 +148,10 @@ namespace TensorFlow
 
 		internal override void NativeDispose (IntPtr handle)
 		{
-			unsafe { TF_DeleteBuffer ((LLBuffer*)handle); }
+            if (handle == IntPtr.Zero)
+                return;
+
+            unsafe { TF_DeleteBuffer((LLBuffer*)handle); }
 		}
 
 		// extern TF_Buffer TF_GetBuffer (TF_Buffer *buffer);

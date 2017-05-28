@@ -300,10 +300,10 @@ namespace SampleTest
 		public static void Main (string [] args)
 		{
 			Console.WriteLine (Environment.CurrentDirectory);
+            TensorFlowSharp.Windows.NativeBinding.Init();
 			Console.WriteLine ("TensorFlow version: " + TFCore.Version);
 
 			//var b = TFCore.GetAllOpList ();
-
 
 			var t = new MainClass ();
 			t.TestParametersWithIndexes ();
