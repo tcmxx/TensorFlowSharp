@@ -114,9 +114,13 @@ namespace ExampleInceptionInference
                     // accepts batches of image data as input.
                     var tensor = CreateTensorFromImageFile(file);
 
+                    long startRun = sw.ElapsedMilliseconds;
+
                     var runner = session.GetRunner();
                     runner.AddInput(graph["input"][0], tensor).Fetch(graph["output"][0]);
                     var output = runner.Run();
+
+                    Console.WriteLine($"Runner Takes {sw.ElapsedMilliseconds - startRun}ms");
                     // output[0].Value() is a vector containing probabilities of
                     // labels for each image in the "batch". The batch size was 1.
                     // Find the most probably label index.

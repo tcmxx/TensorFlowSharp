@@ -6,6 +6,7 @@
 [Bb]in/
 packages/
 TestResults/
+[Nn]ative/
 
 # globs
 Makefile.in

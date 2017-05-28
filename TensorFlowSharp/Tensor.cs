@@ -1078,7 +1078,8 @@ namespace TensorFlow
 				return GetValue ().ToString ();
 
 			StringBuilder sb = new StringBuilder ("[");
-			for (int i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++)
+            {
 				sb.Append (TF_Dim (handle, i));
 				if (i + 1 < n)
 					sb.Append ("x");
