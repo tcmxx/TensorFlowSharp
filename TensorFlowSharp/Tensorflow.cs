@@ -898,12 +898,10 @@ namespace TensorFlow
 
             try
             {
-
-                // 
                 // Call constructor here
                 // Wrap the various TF_graphs (with owns=false)
                 // Marshal the condInputs, bodyInputs
-                //
+
                 string name;
 
                 int n = result.ninputs;
@@ -928,6 +926,7 @@ namespace TensorFlow
                     for (int i = 0; i < n; i++)
                         result.body_outputs[i] = bodyOutputs[i];
                     var ret = new TFOutput[inputs.Length];
+                    
                     fixed (TFOutput* first = &ret[0])
                         TF_FinishWhile(ref result, cstatus.handle, first);
                     
