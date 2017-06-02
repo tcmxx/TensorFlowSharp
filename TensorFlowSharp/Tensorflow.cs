@@ -12,6 +12,8 @@
 // Guidaance on doing language bindings for Tensorflow:
 // https://www.tensorflow.org/versions/r0.11/how_tos/language_bindings/
 
+//test
+
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -42,6 +44,20 @@ namespace TensorFlow
     public abstract class NativeBinding
     {
         public const string TensorFlowLibrary = "libtensorflow";
+        
+        public delegate void Print(string s);
+        protected abstract Print InternalPrintFunc { get; set; }
+        public static Print PrintFunc
+        {
+            get
+            {
+                return Current.InternalPrintFunc;
+            }
+            set
+            {
+                Current.InternalPrintFunc = value;
+            }
+        }
 
         public static NativeBinding _current;
         public static NativeBinding Current
@@ -55,7 +71,9 @@ namespace TensorFlow
             set
             {
                 if (_current == null)
+                {
                     _current = value;
+                }
                 else
                     throw new Exception("NativeBinding is alreay Inited");
             }
@@ -72,6 +90,11 @@ namespace TensorFlow
         }
 
         protected unsafe abstract void InternalMemoryCopy(void* source, void* destination, long destinationSizeInBytes, long sourceBytesToCopy);
+
+        public static void Log(string msg)
+        {
+            PrintFunc(msg);
+        }
     }
 
     /// <summary>

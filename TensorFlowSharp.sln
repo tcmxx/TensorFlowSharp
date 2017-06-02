@@ -2,8 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleTest", "SampleTest\SampleTest.csproj", "{243E2C90-F465-4A6E-9063-8F2C138015C7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpGenerator", "OpGenerator\OpGenerator.csproj", "{700E5928-3D5D-4B54-AD4D-BC48E79E389E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn", "Learn\Learn.csproj", "{20567EDE-7C20-4734-B489-C6D303843105}"
@@ -14,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{67
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{20AF6B79-D9AF-42EB-A953-8E4039824D43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TensorFlowSharp", "TensorFlowSharp\TensorFlowSharp.csproj", "{67F9D3A8-F71E-4428-913F-C37AE82CDB24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TensorFlowSharp", "TensorFlowSharp\TensorFlowSharp.csproj", "{A6E9A29F-E57F-42AA-824C-9581B2783E5F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidTests", "AndroidTests\AndroidTests.csproj", "{168FCD67-DF92-4905-A8F3-230856F9628E}"
 EndProject
@@ -32,14 +30,6 @@ Global
 		Release|TensorFlowSharp = Release|TensorFlowSharp
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{243E2C90-F465-4A6E-9063-8F2C138015C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{243E2C90-F465-4A6E-9063-8F2C138015C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{243E2C90-F465-4A6E-9063-8F2C138015C7}.Debug|TensorFlowSharp.ActiveCfg = Debug|x64
-		{243E2C90-F465-4A6E-9063-8F2C138015C7}.Debug|TensorFlowSharp.Build.0 = Debug|x64
-		{243E2C90-F465-4A6E-9063-8F2C138015C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{243E2C90-F465-4A6E-9063-8F2C138015C7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{243E2C90-F465-4A6E-9063-8F2C138015C7}.Release|TensorFlowSharp.ActiveCfg = Release|Any CPU
-		{243E2C90-F465-4A6E-9063-8F2C138015C7}.Release|TensorFlowSharp.Build.0 = Release|Any CPU
 		{700E5928-3D5D-4B54-AD4D-BC48E79E389E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{700E5928-3D5D-4B54-AD4D-BC48E79E389E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{700E5928-3D5D-4B54-AD4D-BC48E79E389E}.Debug|TensorFlowSharp.ActiveCfg = Debug|x64
@@ -64,14 +54,14 @@ Global
 		{069A6736-7711-4805-8660-A267E713BC54}.Release|Any CPU.Build.0 = Release|Any CPU
 		{069A6736-7711-4805-8660-A267E713BC54}.Release|TensorFlowSharp.ActiveCfg = Release|x64
 		{069A6736-7711-4805-8660-A267E713BC54}.Release|TensorFlowSharp.Build.0 = Release|x64
-		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Debug|TensorFlowSharp.ActiveCfg = Debug|Any CPU
-		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Debug|TensorFlowSharp.Build.0 = Debug|Any CPU
-		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|TensorFlowSharp.ActiveCfg = Release|Any CPU
-		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|TensorFlowSharp.Build.0 = Release|Any CPU
+		{A6E9A29F-E57F-42AA-824C-9581B2783E5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6E9A29F-E57F-42AA-824C-9581B2783E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6E9A29F-E57F-42AA-824C-9581B2783E5F}.Debug|TensorFlowSharp.ActiveCfg = Debug|Any CPU
+		{A6E9A29F-E57F-42AA-824C-9581B2783E5F}.Debug|TensorFlowSharp.Build.0 = Debug|Any CPU
+		{A6E9A29F-E57F-42AA-824C-9581B2783E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6E9A29F-E57F-42AA-824C-9581B2783E5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6E9A29F-E57F-42AA-824C-9581B2783E5F}.Release|TensorFlowSharp.ActiveCfg = Release|Any CPU
+		{A6E9A29F-E57F-42AA-824C-9581B2783E5F}.Release|TensorFlowSharp.Build.0 = Release|Any CPU
 		{168FCD67-DF92-4905-A8F3-230856F9628E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{168FCD67-DF92-4905-A8F3-230856F9628E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{168FCD67-DF92-4905-A8F3-230856F9628E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
@@ -113,7 +103,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{243E2C90-F465-4A6E-9063-8F2C138015C7} = {20AF6B79-D9AF-42EB-A953-8E4039824D43}
 		{20567EDE-7C20-4734-B489-C6D303843105} = {20AF6B79-D9AF-42EB-A953-8E4039824D43}
 		{069A6736-7711-4805-8660-A267E713BC54} = {674EC1D7-9649-462E-A7A8-93D0DE84FE64}
 		{168FCD67-DF92-4905-A8F3-230856F9628E} = {20AF6B79-D9AF-42EB-A953-8E4039824D43}

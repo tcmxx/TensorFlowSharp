@@ -9,9 +9,11 @@ namespace TensorFlowSharp.Windows
 {
     public class NativeBinding : TensorFlow.NativeBinding
     {
+        protected override Print InternalPrintFunc { get; set; }
+
         private NativeBinding()
         {
-
+            InternalPrintFunc = new Print((string s) => { Console.WriteLine(s); });
         }
 
         public static void Init()
