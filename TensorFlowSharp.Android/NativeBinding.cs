@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TensorFlow;
+using Droid = Android;
 
 namespace TensorFlowSharp.Android
 {
@@ -9,8 +11,10 @@ namespace TensorFlowSharp.Android
     {
         private NativeBinding()
         {
-
+            InternalPrintFunc = new Print((s) => { Droid.Util.Log.Debug("TensorFlowSharp", s); });
         }
+
+        protected override Print InternalPrintFunc { get; set; }
 
         public static void Init()
         {
