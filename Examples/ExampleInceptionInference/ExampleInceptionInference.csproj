@@ -58,104 +58,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Datas\Some Images\baby in poster.jpg">
-      <Link>datas\baby in poster.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\bear in water.jpg">
-      <Link>datas\bear in water.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\biggle.jpg">
-      <Link>datas\biggle.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\cat.jpg">
-      <Link>datas\cat.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\cat2.jpg">
-      <Link>datas\cat2.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\flower.png">
-      <Link>datas\flower.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\galaxy.jpg">
-      <Link>datas\galaxy.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\girin.jpg">
-      <Link>datas\girin.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\gogh-star sky.jpg">
-      <Link>datas\gogh-star sky.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\golden retriver.jpg">
-      <Link>datas\golden retriver.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\grass and dog.jpg">
-      <Link>datas\grass and dog.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\gugugugugugu.jpg">
-      <Link>datas\gugugugugugu.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\hamster.jpg">
-      <Link>datas\hamster.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\hamster2.jpg">
-      <Link>datas\hamster2.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\jupiter.jpg">
-      <Link>datas\jupiter.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\nuguri.jpg">
-      <Link>datas\nuguri.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\pink flower.jpg">
-      <Link>datas\pink flower.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\poodle.jpg">
-      <Link>datas\poodle.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\tiger.jpg">
-      <Link>datas\tiger.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\tiger2.jpg">
-      <Link>datas\tiger2.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\turtle.jpg">
-      <Link>datas\turtle.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\ugly fish.jpg">
-      <Link>datas\ugly fish.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\water drops.jpg">
-      <Link>datas\water drops.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Datas\Some Images\yellow flower.jpg">
-      <Link>datas\yellow flower.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\TensorFlowSharp\TensorFlowSharp.csproj">
       <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
       <Name>TensorFlowSharp</Name>
@@ -164,6 +66,104 @@
       <Project>{9a5fc834-a8df-4410-a21d-cf60b4fcacb7}</Project>
       <Name>TensorFlowSharp.Windows</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\baby in poster.jpg">
+      <Link>datas\baby in poster.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\bear in water.jpg">
+      <Link>datas\bear in water.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\biggle.jpg">
+      <Link>datas\biggle.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\cat.jpg">
+      <Link>datas\cat.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\cat2.jpg">
+      <Link>datas\cat2.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\flower.png">
+      <Link>datas\flower.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\galaxy.jpg">
+      <Link>datas\galaxy.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\girin.jpg">
+      <Link>datas\girin.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\gogh-star sky.jpg">
+      <Link>datas\gogh-star sky.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\golden retriver.jpg">
+      <Link>datas\golden retriver.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\grass and dog.jpg">
+      <Link>datas\grass and dog.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\gugugugugugu.jpg">
+      <Link>datas\gugugugugugu.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\hamster.jpg">
+      <Link>datas\hamster.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\hamster2.jpg">
+      <Link>datas\hamster2.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\jupiter.jpg">
+      <Link>datas\jupiter.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\nuguri.jpg">
+      <Link>datas\nuguri.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\pink flower.jpg">
+      <Link>datas\pink flower.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\poodle.jpg">
+      <Link>datas\poodle.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\tiger.jpg">
+      <Link>datas\tiger.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\tiger2.jpg">
+      <Link>datas\tiger2.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\turtle.jpg">
+      <Link>datas\turtle.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\ugly fish.jpg">
+      <Link>datas\ugly fish.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\water drops.jpg">
+      <Link>datas\water drops.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GitIgnoredDatas\Datas\Some Images\yellow flower.jpg">
+      <Link>datas\yellow flower.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

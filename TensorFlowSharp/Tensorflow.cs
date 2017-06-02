@@ -3,6 +3,7 @@
 // 
 // Authors:
 //   Miguel de Icaza (miguel@microsoft.com)
+//     ㄴThank you! (AinL
 //
 // Strongly typed API
 // The API generally takes a TF_Status that defaults to null, if the value is null, on error, this raises an exception, otherwise, the error is returned on the TF_Status.
@@ -929,8 +930,7 @@ namespace TensorFlow
                     var ret = new TFOutput[inputs.Length];
                     fixed (TFOutput* first = &ret[0])
                         TF_FinishWhile(ref result, cstatus.handle, first);
-
-
+                    
                     if (cstatus.CheckMaybeRaise(status))
                         return ret;
                 }

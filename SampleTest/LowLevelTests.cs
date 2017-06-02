@@ -214,33 +214,34 @@ namespace SampleTest
 
 		public void WhileTest ()
 		{
-			using (var j = new WhileTester ()) {
+            using (var j = new WhileTester())
+            {
+                // Create loop: while (input1 < input2) input1 += input2 + 1
+                j.Init(2, (TFGraph conditionGraph, TFOutput[] condInputs, out TFOutput condOutput, TFGraph bodyGraph, TFOutput[] bodyInputs, TFOutput[] bodyOutputs, out string name) =>
+                {
+                    Assert(bodyGraph.Handle != IntPtr.Zero);
+                    Assert(conditionGraph.Handle != IntPtr.Zero);
 
-				// Create loop: while (input1 < input2) input1 += input2 + 1
-				j.Init (2, (TFGraph conditionGraph, TFOutput [] condInputs, out TFOutput condOutput, TFGraph bodyGraph, TFOutput [] bodyInputs, TFOutput [] bodyOutputs, out string name) => {
-					Assert (bodyGraph.Handle != IntPtr.Zero);
-					Assert (conditionGraph.Handle != IntPtr.Zero);
+                    var status = new TFStatus();
+                    var lessThan = conditionGraph.Less(condInputs[0], condInputs[1]);
 
-					var status = new TFStatus ();
-					var lessThan = conditionGraph.Less (condInputs [0], condInputs [1]);
+                    Assert(status);
+                    condOutput = new TFOutput(lessThan.Operation, 0);
 
-					Assert (status);
-					condOutput = new TFOutput (lessThan.Operation, 0);
+                    var add1 = bodyGraph.Add(bodyInputs[0], bodyInputs[1]);
+                    var one = bodyGraph.Const(1);
+                    var add2 = bodyGraph.Add(add1, one);
+                    bodyOutputs[0] = new TFOutput(add2, 0);
+                    bodyOutputs[1] = bodyInputs[1];
 
-					var add1 = bodyGraph.Add (bodyInputs [0], bodyInputs [1]);
-					var one = bodyGraph.Const (1);
-					var add2 = bodyGraph.Add (add1, one);
-					bodyOutputs [0] = new TFOutput (add2, 0);
-					bodyOutputs [1] = bodyInputs [1];
+                    name = "Simple1";
+                });
 
-					name = "Simple1";
-				});
+                var res = j.Run(-9, 2);
 
-				var res = j.Run (-9, 2);
-
-				Assert (3 == (int)res [0].GetValue ());
-				Assert (2 == (int)res [1].GetValue ());
-			};
+                Assert(3 == (int)res[0].GetValue());
+                Assert(2 == (int)res[1].GetValue());
+            };
 		}
 
 		// For this to work, we need to surface REGISTER_OP from C++ to C

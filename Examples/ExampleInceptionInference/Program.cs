@@ -45,6 +45,8 @@ namespace ExampleInceptionInference
 		static void Error (string msg)
 		{
 			Console.WriteLine ("Error: {0}", msg);
+            Console.WriteLine("Press Enter To Exit");
+            Console.ReadLine();
 			Environment.Exit (1);
 		}
 

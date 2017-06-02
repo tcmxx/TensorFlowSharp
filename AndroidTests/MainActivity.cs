@@ -12,11 +12,18 @@ namespace AndroidTests
         {
             base.OnCreate(bundle);
 
-            SetContentView(Resource.Layout.Main);
-
             TensorFlowSharp.Android.NativeBinding.Init();
 
+            SetContentView(Resource.Layout.Main);
+
+            Button bt = FindViewById<Button>(Resource.Id.MyButton);
+            bt.Click += Bt_Click;
+        }
+
+        private void Bt_Click(object sender, System.EventArgs e)
+        {
             Log.Debug("TensorFlowSharp", "TF Version: " + TensorFlow.TFCore.Version);
+            ((Button)sender).Text = $"Tensorflow Version: {TensorFlow.TFCore.Version}";
         }
     }
 }

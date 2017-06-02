@@ -1,4 +1,4 @@
-//
+ //
 // Authors:
 //   Miguel de Icaza (miguel@novell.com)
 //

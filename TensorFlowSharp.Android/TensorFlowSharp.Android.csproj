@@ -51,30 +51,22 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidNativeLibrary Include="..\Native\libandroid_tensorflow_lib.lo\arm64-v8a\libandroid_tensorflow_lib.lo">
-      <Link>Native\arm64-v8a\libandroid_tensorflow_lib.lo</Link>
-    </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="..\Native\libandroid_tensorflow_lib.lo\armeabi-v7a\libandroid_tensorflow_lib.lo">
-      <Link>Native\armeabi-v7a\libandroid_tensorflow_lib.lo</Link>
-    </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="..\Native\libandroid_tensorflow_lib.lo\x86\libandroid_tensorflow_lib.lo">
-      <Link>Native\x86\libandroid_tensorflow_lib.lo</Link>
-    </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="..\Native\libandroid_tensorflow_lib.lo\x86_64\libandroid_tensorflow_lib.lo">
-      <Link>Native\x86_64\libandroid_tensorflow_lib.lo</Link>
-    </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="..\Native\libtensorflow_inference.so\arm64-v8a\libtensorflow.so">
+    <EmbeddedNativeLibrary Include="..\GitIgnoredDatas\android\arm64-v8a\libtensorflow.so">
       <Link>Native\arm64-v8a\libtensorflow.so</Link>
-    </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="..\Native\libtensorflow_inference.so\armeabi-v7a\libtensorflow.so">
+	  <Abi>arm64-v8a</Abi>
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="..\GitIgnoredDatas\android\armeabi-v7a\libtensorflow.so">
       <Link>Native\armeabi-v7a\libtensorflow.so</Link>
-    </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="..\Native\libtensorflow_inference.so\x86\libtensorflow.so">
+	  <Abi>armeabi-v7a</Abi>
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="..\GitIgnoredDatas\android\x86\libtensorflow.so">
       <Link>Native\x86\libtensorflow.so</Link>
-    </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="..\Native\libtensorflow_inference.so\x86_64\libtensorflow.so">
+	  <Abi>x86</Abi>
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="..\GitIgnoredDatas\android\x86_64\libtensorflow.so">
       <Link>Native\x86_64\libtensorflow.so</Link>
-    </AndroidNativeLibrary>
+	  <Abi>x86_64</Abi>
+    </EmbeddedNativeLibrary>
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
