@@ -12,8 +12,6 @@
 // Guidaance on doing language bindings for Tensorflow:
 // https://www.tensorflow.org/versions/r0.11/how_tos/language_bindings/
 
-//test
-
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
