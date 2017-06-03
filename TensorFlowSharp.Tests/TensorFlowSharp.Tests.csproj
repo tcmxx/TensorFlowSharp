@@ -82,7 +82,7 @@
       <Name>TensorFlowSharp.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\TensorFlowSharp\TensorFlowSharp.csproj">
-      <Project>{67F9D3A8-F71E-4428-913F-C37AE82CDB24}</Project>
+      <Project>{a6e9a29f-e57f-42aa-824c-9581b2783e5f}</Project>
       <Name>TensorFlowSharp</Name>
     </ProjectReference>
   </ItemGroup>

@@ -96,11 +96,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TensorFlowSharp\TensorFlowSharp.csproj">
-      <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
+      <Project>{a6e9a29f-e57f-42aa-824c-9581b2783e5f}</Project>
       <Name>TensorFlowSharp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
