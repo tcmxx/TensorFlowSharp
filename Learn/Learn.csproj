@@ -54,9 +54,9 @@
     <Compile Include="DataConverter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TensorFlowSharp.Windows\TensorFlowSharp.Windows.csproj">
+    <ProjectReference Include="..\TensorFlowSharp.Windows\TensorFlowSharp.Windows.csproj.back.csproj">
       <Project>{9a5fc834-a8df-4410-a21d-cf60b4fcacb7}</Project>
-      <Name>TensorFlowSharp.Windows</Name>
+      <Name>TensorFlowSharp.Windows.csproj.back</Name>
     </ProjectReference>
     <ProjectReference Include="..\TensorFlowSharp\TensorFlowSharp.csproj">
       <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
