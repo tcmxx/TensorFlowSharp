@@ -300,10 +300,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\GitIgnoredDatas\windows\libtensorflow.dll">
-      <Link>libtensorflow.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Content Include="libtensorflow.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
