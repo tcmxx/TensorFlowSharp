@@ -77,9 +77,9 @@
       <Project>{20567ede-7c20-4734-b489-c6d303843105}</Project>
       <Name>Learn</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TensorFlowSharp.Windows\TensorFlowSharp.Windows.csproj.back.csproj">
+    <ProjectReference Include="..\TensorFlowSharp.Windows\TensorFlowSharp.Windows.csproj">
       <Project>{9a5fc834-a8df-4410-a21d-cf60b4fcacb7}</Project>
-      <Name>TensorFlowSharp.Windows.csproj.back</Name>
+      <Name>TensorFlowSharp.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\TensorFlowSharp\TensorFlowSharp.csproj">
       <Project>{67F9D3A8-F71E-4428-913F-C37AE82CDB24}</Project>
