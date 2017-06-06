@@ -163,19 +163,22 @@ namespace TensorFlow
         }
     }
 
-    /// <summary>
-    /// Base class for many TensorFlow data types that provides a common idiom to dispose and
-    /// release resources associated with the native data types.   Generally, you do not need to use this.
-    /// </summary>
-    /// <remarks>
-    /// This implements the Dispose pattern in a reusable form for TensorFlow types.
-    /// 
-    /// Subclasses invoke the constructor with the handle that this will wrap, and must
-    /// override the NativeDispose method (internal) to release the associated resource.
-    /// </remarks>
-    public abstract class TFDisposable : IDisposable
-    {
-        internal IntPtr handle;
+	/// <summary>
+	/// Base class for many TensorFlow data types that provides a common idiom to dispose and
+	/// release resources associated with the native data types.   Generally, you do not need to use this.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This implements the Dispose pattern in a reusable form for TensorFlow types.
+	/// </para>
+	/// <para>
+	/// Subclasses invoke the constructor with the handle that this will wrap, and must
+	/// override the NativeDispose method (internal) to release the associated resource.
+	/// </para>
+	/// </remarks>
+	public abstract class TFDisposable : IDisposable
+	{
+		internal IntPtr handle;
 
         /// <summary>
         /// Returns the opaque handle to the object that this TFDisposable owns.
@@ -246,36 +249,51 @@ namespace TensorFlow
         }
     }
 
-    /// <summary>
-    /// TensorFlow Exception
-    /// </summary>
-    public class TFException : Exception
-    {
-        public TFException(string message) : base(message) { }
-    }
+	/// <summary>
+	/// TensorFlow Exception
+	/// </summary>
+	public class TFException : Exception {
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:TensorFlow.TFException"/> class with a message.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		public TFException (string message) : base (message) { }
+	}
 
-    /// <summary>
-    /// Used to track the result of TensorFlow operations.
-    /// </summary>
-    /// <remarks>
-    /// TFStatus is used to track the status of a call to some TensorFlow
-    /// operations.   Instances of this object are passed to various
-    /// TensorFlow operations and you can use the <see cref="P:TensorFlow.TFStatus.Ok"/>
-    /// to quickly check if the operation succeeded, or get more detail from the
-    /// <see cref="P:TensorFlow.TFStatus.StatusCode"/> and a human-readable text
-    /// using the <see cref="P:TensorFlow.TFStatus.StatusMessage"/> property.
-    /// 
-    /// The convenience <see cref="M:TensorFlow.TFStatus.Raise"/> can be used
-    /// to raise a <see cref="P:TensorFlow.TFException"/> if the status of the
-    /// operation did not succeed.
-    /// </remarks>
-    public class TFStatus : TFDisposable
-    {
-        // extern TF_Status * TF_NewStatus ();
-        [DllImport(NativeBinding.TensorFlowLibrary)]
-        internal static extern unsafe TF_Status TF_NewStatus();
+	/// <summary>
+	/// Used to track the result of TensorFlow operations.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// TFStatus is used to track the status of a call to some TensorFlow
+	/// operations.   Instances of this object are passed to various
+	/// TensorFlow operations and you can use the <see cref="P:TensorFlow.TFStatus.Ok"/>
+	/// to quickly check if the operation succeeded, or get more detail from the
+	/// <see cref="P:TensorFlow.TFStatus.StatusCode"/> and a human-readable text
+	/// using the <see cref="P:TensorFlow.TFStatus.StatusMessage"/> property.
+	/// </para>
+	/// <para>
+	/// The convenience <see cref="M:TensorFlow.TFStatus.Raise"/> can be used
+	/// to raise a <see cref="P:TensorFlow.TFException"/> if the status of the
+	/// operation did not succeed.
+	/// </para>
+	/// </remarks>
+	public class TFStatus : TFDisposable
+	{
+		// extern TF_Status * TF_NewStatus ();
+		[DllImport (NativeBinding.TensorFlowLibrary)]
+		internal static extern unsafe TF_Status TF_NewStatus ();
 
-        [ThreadStatic] public static TFStatus Default = new TFStatus();
+		/// <summary>
+		/// Per-thread global status that you can use if you do not need to create a new instance of this object.
+		/// </summary>
+		/// <remarks>
+		/// This is provided as a convenience for APIs that take a TFStatus.   While the TFStatus is usually an
+		/// optional parameter, when it is made optional, API calls that fail raise an exception.   Use this 
+		/// property to pass a TFStatus without having to allocate a new one.   The problem with this of course
+		/// is that you risk having multiple parts of your code override this thread-global variable.
+		/// </remarks>
+		[ThreadStatic] public static TFStatus Default = new TFStatus ();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:TensorFlow.TFStatus"/> class.
@@ -416,11 +434,14 @@ namespace TensorFlow
         internal static extern size_t TF_StringEncodedSize(size_t len);
     }
 
-    public class TFSessionOptions : TFDisposable
-    {
-        // extern TF_SessionOptions * TF_NewSessionOptions ();
-        [DllImport(NativeBinding.TensorFlowLibrary)]
-        internal static extern unsafe TF_SessionOptions TF_NewSessionOptions();
+	/// <summary>
+	/// The session options object holds configuration options that you want to use during your session, like the TensorFlow target or the configuration.
+	/// </summary>
+	public class TFSessionOptions : TFDisposable
+	{
+		// extern TF_SessionOptions * TF_NewSessionOptions ();
+		[DllImport (NativeBinding.TensorFlowLibrary)]
+		internal static extern unsafe TF_SessionOptions TF_NewSessionOptions ();
 
         public TFSessionOptions() : base(TF_NewSessionOptions()) { }
 
@@ -432,26 +453,41 @@ namespace TensorFlow
             TF_DeleteSessionOptions(handle);
         }
 
-        // extern void TF_SetTarget (TF_SessionOptions *options, const char *target);
-        [DllImport(NativeBinding.TensorFlowLibrary)]
-        static extern unsafe void TF_SetTarget(TF_SessionOptions options, string target);
-        public void SetTarget(string target)
-        {
-            if (handle == IntPtr.Zero)
-                ObjectDisposedException();
+		// extern void TF_SetTarget (TF_SessionOptions *options, const char *target);
+		[DllImport (NativeBinding.TensorFlowLibrary)]
+		static extern unsafe void TF_SetTarget (TF_SessionOptions options, string target);
 
-            TF_SetTarget(handle, target);
-        }
+		/// <summary>
+		/// Sets the target in options.
+		/// </summary>
+		/// <param name="target">target can be empty, a single entry, or a comma separated list of entries.
+		/// Each entry is in one of the following formats: "local", ip:port, host:port.</param>
+		/// 
+		public void SetTarget (string target)
+		{
+			if (handle == IntPtr.Zero)
+				ObjectDisposedException ();
+			
+			TF_SetTarget (handle, target);
+		}
 
         // extern void TF_SetConfig (TF_SessionOptions *options, const void *proto, size_t proto_len, TF_Status *status);
         [DllImport(NativeBinding.TensorFlowLibrary)]
         static extern unsafe void TF_SetConfig(TF_SessionOptions options, IntPtr proto, size_t proto_len, TF_Status status);
 
-
-        public void SetConfig(IntPtr protoData, int length, TFStatus status = null)
-        {
-            if (handle == IntPtr.Zero)
-                ObjectDisposedException();
+		/// <summary>
+		/// Sets the configuration information for the session.
+		/// </summary>
+		/// <param name="protoData">Serialized protocol buffer for the tensorflow.ConfigProto message.</param>
+		/// <param name="length">Length of the buffer.</param>
+		/// <param name="status">If config was not parsed successfully as a ConfigProto, the error is recorded here.</param>
+		/// <remarks>
+		/// The configuration option is a Protocol Buffer representing the tensorflow.ConfigProto
+		/// </remarks>
+		public void SetConfig (IntPtr protoData, int length, TFStatus status = null)
+		{
+			if (handle == IntPtr.Zero)
+				ObjectDisposedException();
 
             var cstatus = TFStatus.Setup(status);
 
@@ -461,25 +497,29 @@ namespace TensorFlow
 
     }
 
-    /// <summary>
-    /// Represents a computation graph.  Graphs may be shared between sessions and are thread safe.
-    /// </summary>
-    /// <remarks>
-    /// Graphs consist of operations (represented by TFOperation objects), these can be named, or 
-    /// the runtime will automatically assign a name.
-    /// 
-    /// For debugging purposes, you might want to group operations together, for this, call the
-    /// WithScope method with your new scope, which will create a new namespace for your object names.
-    /// 
-    /// For example, if you call WithScope ("demo"), and add an operation named "add" inside the
-    /// scope, the full name of the operation will be "demo/add", if you create a new scope inside, say
-    /// "hot", and add a "sub" operation there the result will be "demo/hot/sub".
-    /// </remarks>
-    public partial class TFGraph : TFDisposable
-    {
-        // extern TF_Graph * TF_NewGraph ();
-        [DllImport(NativeBinding.TensorFlowLibrary)]
-        static extern unsafe TF_Graph TF_NewGraph();
+	/// <summary>
+	/// Represents a computation graph.  Graphs may be shared between sessions and are thread safe.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// Graphs consist of operations (represented by TFOperation objects), these can be named, or 
+	/// the runtime will automatically assign a name.
+	/// </para> 
+	/// <para>
+	/// For debugging purposes, you might want to group operations together, for this, call the
+	/// WithScope method with your new scope, which will create a new namespace for your object names.
+	/// </para>
+	/// <para>
+	/// For example, if you call WithScope ("demo"), and add an operation named "add" inside the
+	/// scope, the full name of the operation will be "demo/add", if you create a new scope inside, say
+	/// "hot", and add a "sub" operation there the result will be "demo/hot/sub".
+	/// </para>
+	/// </remarks>
+	public partial class TFGraph : TFDisposable
+	{
+		// extern TF_Graph * TF_NewGraph ();
+		[DllImport (NativeBinding.TensorFlowLibrary)]
+		static extern unsafe TF_Graph TF_NewGraph ();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:TensorFlow.TFGraph"/> class.
@@ -735,43 +775,45 @@ namespace TensorFlow
         /// <value>The current name scope.</value>
         public string CurrentNameScope { get; internal set; } = "";
 
-        /// <summary>
-        /// Creates a new namescope by setting the scope to the description provided.
-        /// </summary>
-        /// <returns>A new scope that will remain in use until the return TFScope is disposed.</returns>
-        /// <param name="nameScopeDesc">The namescope description, if the value is null, this
-        /// will reset the toplevel namescope to be the empty value. </param>
-        /// <remarks>
-        /// To more easily name your operations and group then, you can use the
-        /// WithScope method to set a current name scope that alter the complete name
-        /// of an operation added to the graph.
-        /// 
-        /// The graph starts with a scope set to the empty string, you can introduce new
-        /// scopes by calling WithScope, and can be conveniently used with the C# using
-        /// statement, like this:
-        /// 
-        /// <code>
-        /// Assert (graph.CurrentNamescope, "");
-        /// using (var nested = graph.WithScope ("nested")){
-        ///    Assert (graph.CurrentNameScope, "nested");
-        ///    using (var inner = graph.WithScope ("inner")){
-        ///        Assert (graph.CurrentNameScope, "nested/inner");
-        ///    }
-        /// }
-        /// </code>
-        /// </remarks>
-        public TFScope WithScope(string nameScopeDesc)
-        {
-            var scope = new TFScope(this);
-            if (scope == null)
-                CurrentNameScope = "";
-            else if (CurrentNameScope.Length == 0)
-                CurrentNameScope = nameScopeDesc;
-            else
-                CurrentNameScope = CurrentNameScope + "/" + nameScopeDesc;
-
-            return scope;
-        }
+		/// <summary>
+		/// Creates a new namescope by setting the scope to the description provided.
+		/// </summary>
+		/// <returns>A new scope that will remain in use until the return TFScope is disposed.</returns>
+		/// <param name="nameScopeDesc">The namescope description, if the value is null, this
+		/// will reset the toplevel namescope to be the empty value. </param>
+		/// <remarks>
+		/// <para>
+		/// To more easily name your operations and group then, you can use the
+		/// WithScope method to set a current name scope that alter the complete name
+		/// of an operation added to the graph.
+		/// </para>
+		/// <para>
+		/// The graph starts with a scope set to the empty string, you can introduce new
+		/// scopes by calling WithScope, and can be conveniently used with the C# using
+		/// statement, like this:
+		/// </para>
+		/// <code>
+		/// Assert (graph.CurrentNamescope, "");
+		/// using (var nested = graph.WithScope ("nested")){
+		///    Assert (graph.CurrentNameScope, "nested");
+		///    using (var inner = graph.WithScope ("inner")){
+		///        Assert (graph.CurrentNameScope, "nested/inner");
+		///    }
+		/// }
+		/// </code>
+		/// </remarks>
+		public TFScope WithScope (string nameScopeDesc)
+		{
+			var scope = new TFScope (this);
+			if (scope == null)
+				CurrentNameScope = "";
+			else if (CurrentNameScope.Length == 0)
+				CurrentNameScope = nameScopeDesc;
+			else
+				CurrentNameScope = CurrentNameScope + "/" + nameScopeDesc;
+			
+			return scope;
+		}
 
         Dictionary<string, int> values = new Dictionary<string, int>();
 
@@ -876,24 +918,29 @@ namespace TensorFlow
             return r;
         }
 
-        /// <summary>
-        /// Signature of the method that will be invoked by the TFGraph.While method to construct a while loop
-        /// </summary>
-        /// <remarks>
-        /// The method should build up the condition on the conditionGraph and the body of the while 
-        /// loop in the provided bodyGraph.   It should set the condOutput to the value used as the
-        /// condition output and the array of values in bodyOutputs to the final outputs as well as the
-        /// name to be used, if not set, one will be assigned.
-        /// 
-        /// The conditionGraph represents the while condition and the inputs are the current values of the
-        /// input variables (condInputs).   The output should be a scalar boolean.
-        /// 
-        /// The loop body graph is in bodyGraph, The inputs are the current values of the loop
-        /// variables. The outputs are the updated values of the loop variables.
-        /// 
-        /// You can use the passed status record problems with it.
-        /// </remarks>
-        public delegate void WhileConstructor(TFGraph conditionGraph, TFOutput[] condInputs, out TFOutput condOutput, TFGraph bodyGraph, TFOutput[] bodyInputs, TFOutput[] bodyOutputs, out string name);
+		/// <summary>
+		/// Signature of the method that will be invoked by the TFGraph.While method to construct a while loop
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// The method should build up the condition on the conditionGraph and the body of the while 
+		/// loop in the provided bodyGraph.   It should set the condOutput to the value used as the
+		/// condition output and the array of values in bodyOutputs to the final outputs as well as the
+		/// name to be used, if not set, one will be assigned.
+		/// </para>
+		/// <para>
+		/// The conditionGraph represents the while condition and the inputs are the current values of the
+		/// input variables (condInputs).   The output should be a scalar boolean.
+		/// </para>
+		/// <para>
+		/// The loop body graph is in bodyGraph, The inputs are the current values of the loop
+		/// variables. The outputs are the updated values of the loop variables.
+		/// </para>
+		/// <para>
+		/// You can use the passed status record problems with it.
+		/// </para>
+		/// </remarks>
+		public delegate void WhileConstructor (TFGraph conditionGraph, TFOutput [] condInputs, out TFOutput condOutput, TFGraph bodyGraph, TFOutput [] bodyInputs, TFOutput [] bodyOutputs, out string name);
 
         /// <summary>
         /// Constructs a while loop with the specified inputs and a callback that composes the while loop
@@ -1057,31 +1104,41 @@ namespace TensorFlow
             name = container.CurrentNameScope;
         }
 
-        public void Dispose()
-        {
-            container.CurrentNameScope = name;
-        }
-    }
+		/// <summary>
+		/// Pops the name space to the previous namescope in use.
+		/// </summary>
+		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="T:TensorFlow.TFScope"/>
+		/// to restore the previous name scope in use in the <see cref="T:TensorFlow.TFGraph"/>.
+		/// </remarks>
+		public void Dispose ()
+		{
+			container.CurrentNameScope = name;
+		}
+	}
 
-    /// <summary>
-    /// Low-level TensorFlow operation builder
-    /// </summary>
-    /// <remarks>
-    /// This is the low-level API that is used to create operations by manually specificying all
-    /// the parameters of an operation (inputs, outputs, attribute descriptions) that can then
-    /// be attached into a graph.
-    /// 
-    /// Generally, you will instead be using the methods surfaced in <see cref="T:TensorFlow.TFGraph"/> 
-    /// that surfaces a C# high-level API that has already been bound to the built-in TensorFlow
-    /// nodes.
-    /// 
-    /// You create instances bound to a graph, add inputs, attributes and so on, and when you are done
-    /// you can call the FinishOperation method that will turn this TFOperationDesc into a <see cref="T:TensorFlow.TFOperation"/>.
-    /// </remarks>
-    public class TFOperationDesc : TFDisposable
-    {
-        string opType, operName;
-        TFGraph graph;
+	/// <summary>
+	/// Low-level TensorFlow operation builder
+	/// </summary>
+	/// <remarks>
+	/// <para>This is the low-level API that is used to create operations by manually specificying all
+	/// the parameters of an operation (inputs, outputs, attribute descriptions) that can then
+	/// be attached into a graph.
+	/// </para>
+	/// <para>
+	/// Generally, you will instead be using the methods surfaced in <see cref="T:TensorFlow.TFGraph"/> 
+	/// that surfaces a C# high-level API that has already been bound to the built-in TensorFlow
+	/// nodes.
+	/// </para>
+	/// <para>
+	/// You create instances bound to a graph, add inputs, attributes and so on, and when you are done
+	/// you can call the <see cref="FinishOperation"/> method that will turn this TFOperationDesc 
+	/// into a <see cref="T:TensorFlow.TFOperation"/>.
+	/// </para>
+	/// </remarks>
+	public class TFOperationDesc : TFDisposable
+	{
+		string opType, operName;
+		TFGraph graph;
 
         // extern TF_OperationDescription * TF_NewOperation (TF_Graph *graph, const char *op_type, const char *oper_name);
         [DllImport(NativeBinding.TensorFlowLibrary)]
@@ -1158,24 +1215,27 @@ namespace TensorFlow
         [DllImport(NativeBinding.TensorFlowLibrary)]
         static extern unsafe void TF_AddControlInput(TF_OperationDescription desc, TF_Operation input);
 
-        /// <summary>
-        /// Ensure that the operation does not execute before the control operation does.
-        /// </summary>
-        /// <param name="control">Operation that must be executed before running this operation.</param>
-        /// <remarks>
-        /// A control input is an Operation that must be executed before running the operation 
-        /// currently being built.  
-        /// 
-        /// For example, an Assert operation may be added as a control input for this operation. 
-        /// The Assert now behaves as a pre-condition that will always verify itself before
-        /// running the operation.
-        /// </remarks>
-        public TFOperationDesc AddControlInput(TFOperation control)
-        {
-            if (handle == IntPtr.Zero)
-                ObjectDisposedException();
-            if (control == null)
-                throw new ArgumentNullException("input");
+		/// <summary>
+		/// Ensure that the operation does not execute before the control operation does.
+		/// </summary>
+		/// <param name="control">Operation that must be executed before running this operation.</param>
+		/// <remarks>
+		/// <para>
+		/// A control input is an Operation that must be executed before running the operation 
+		/// currently being built.  
+		/// </para>
+		/// <para>
+		/// For example, an Assert operation may be added as a control input for this operation. 
+		/// The Assert now behaves as a pre-condition that will always verify itself before
+		/// running the operation.
+		/// </para>
+		/// </remarks>
+		public TFOperationDesc AddControlInput (TFOperation control)
+		{
+			if (handle == IntPtr.Zero)
+				ObjectDisposedException ();
+			if (control == null)
+				throw new ArgumentNullException ("input");
 
             TF_AddControlInput(handle, control.handle);
             return this;
@@ -1490,19 +1550,24 @@ namespace TensorFlow
         [DllImport(NativeBinding.TensorFlowLibrary)]
         static extern unsafe TF_Operation TF_FinishOperation(TF_OperationDescription desc, TF_Status status);
 
-        public TFOperation FinishOperation(TFStatus status = null)
-        {
-            if (handle == IntPtr.Zero)
-                ObjectDisposedException();
-            var cstatus = TFStatus.Setup(status);
-            var h = TF_FinishOperation(handle, cstatus.handle);
-            cstatus.CheckMaybeRaise(status);
-            handle = IntPtr.Zero;
+		/// <summary>
+		/// Turns the operation description into an actual operation in the graph.
+		/// </summary>
+		/// <returns>The operation on success, or null on error.</returns>
+		/// <param name="status">Optional status, on failure the operation is not added to the graph.  If you pass null (the default), this operation throws on error conditions.</param>
+		public TFOperation FinishOperation (TFStatus status = null)
+		{
+			if (handle == IntPtr.Zero)
+				ObjectDisposedException ();
+			var cstatus = TFStatus.Setup(status);
+			var h = TF_FinishOperation(handle, cstatus.handle);
+			cstatus.CheckMaybeRaise(status);
+			handle = IntPtr.Zero;
 
-            GC.SuppressFinalize(this);
+			GC.SuppressFinalize(this);
 
             if (status != null && status.Error)
-                return null;
+				return null;
 
             return new TFOperation(graph, h);
         }
@@ -1896,40 +1961,52 @@ namespace TensorFlow
         [DllImport(NativeBinding.TensorFlowLibrary)]
         extern static void TF_ImportGraphDefOptionsRemapControlDependency(TF_ImportGraphDefOptions opts, string srcName, TF_Operation dst);
 
-        /// <summary>
-        /// Sets any imported nodes with a given control input to have it replaced with an operation
-        /// </summary>
-        /// <param name="srcName">Node in the graph to be imported.</param>
-        /// <param name="destination">References an operation that already exists in the graph being imported.</param>
-        /// <remarks>
-        /// Set any imported nodes with control input <paramref name="srcName"/> to have that input
-        /// replaced with <paramref name="dst"/>. 
-        /// </remarks>
-        public void RemapControlDependency(string srcName, TFOperation destination)
-        {
-            if (srcName == null)
-                throw new ArgumentNullException(nameof(srcName));
-            if (destination == null)
-                throw new ArgumentNullException(nameof(destination));
-            if (destination.Handle == IntPtr.Zero)
-                throw new ObjectDisposedException(nameof(destination));
-            TF_ImportGraphDefOptionsRemapControlDependency(handle, srcName, destination.Handle);
-        }
-    }
+		/// <summary>
+		/// Sets any imported nodes with a given control input to have it replaced with an operation
+		/// </summary>
+		/// <param name="srcName">Node in the graph to be imported.</param>
+		/// <param name="destination">References an operation that already exists in the graph being imported.</param>
+		/// <remarks>
+		/// Set any imported nodes with control input <paramref name="srcName"/> to have that input
+		/// replaced with <paramref name="destination"/>. 
+		/// </remarks>
+		public void RemapControlDependency (string srcName, TFOperation destination)
+		{
+			if (srcName == null)
+				throw new ArgumentNullException (nameof (srcName));
+			if (destination == null)
+				throw new ArgumentNullException (nameof (destination));
+			if (destination.Handle == IntPtr.Zero)
+				throw new ObjectDisposedException (nameof (destination));
+			TF_ImportGraphDefOptionsRemapControlDependency (handle, srcName, destination.Handle);
+		}
+	}
 
-    /// <summary>
-    /// Drives the execution of a graph
-    /// </summary>
-    /// <remarks>
-    /// This creates a new context to execute a TFGraph.   You can use the 
-    /// constructo to create an empty session, or you can load an existing
-    /// model using the FromSAvedModel static method in this class.
-    /// </remarks>
-    public class TFSession : TFDisposable
-    {
-        // extern TF_Session * TF_NewSession (TF_Graph *graph, const TF_SessionOptions *opts, TF_Status *status);
-        [DllImport(NativeBinding.TensorFlowLibrary)]
-        static extern unsafe TF_Session TF_NewSession(TF_Graph graph, TF_SessionOptions opts, TF_Status status);
+	/// <summary>
+	/// Drives the execution of a graph
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This creates a new context to execute a TFGraph.   You can use the 
+	/// constructor to create an empty session, or you can load an existing
+	/// model using the <see cref="FromSavedModel"/> static method in this class.
+	/// </para>
+	/// <para>
+	/// To execute operations with the graph, call the <see cref="GetRunner"/>  method
+	/// which returns an object that you can use to build the operation by providing
+	/// the inputs, requesting the operations that you want to execute and the desired outputs.
+	/// </para>
+	/// <para>
+	/// The <see cref="GetRunner"/> method is a high-level helper function that wraps a
+	/// call to the <see cref="Run"/> method which just takes too many parameters that must
+	/// be kept in sync.
+	/// </para>
+	/// </remarks>
+	public class TFSession : TFDisposable
+	{
+		// extern TF_Session * TF_NewSession (TF_Graph *graph, const TF_SessionOptions *opts, TF_Status *status);
+		[DllImport (NativeBinding.TensorFlowLibrary)]
+		static extern unsafe TF_Session TF_NewSession (TF_Graph graph, TF_SessionOptions opts, TF_Status status);
 
         public TFGraph Graph { get; private set; }
 
@@ -2030,37 +2107,40 @@ namespace TensorFlow
         static extern unsafe void TF_SessionRun(TF_Session session, LLBuffer* run_options, TFOutput[] inputs, TF_Tensor[] input_values, int ninputs, TFOutput[] outputs, TF_Tensor[] output_values, int noutputs, TF_Operation[] target_opers, int ntargets, LLBuffer* run_metadata, TF_Status status);
 
 
-        /// <summary>
-        /// Use the runner class to easily configure inputs, outputs and targets to be passed to the session runner.
-        /// </summary>
-        /// <remarks>
-        /// The runner has a simple API that allows developers to call the AddTarget, AddInput, AddOutput and Fetch
-        /// to construct the parameters that will be passed to the TFSession.Run method.
-        /// 
-        /// Instances of this class are created by calling the GetRunner method on the TFSession.
-        /// 
-        /// The various methods in this class return an instance to the Runner itsel, to allow
-        /// to easily construct chains of execution like this:
-        /// 
-        /// <code>
-        /// var result = session.GetRunner ().AddINput (myInput).Fetch (MyOutput).Run ();
-        /// </code>
-        /// 
-        /// You do not need to chain the operations, this works just the same:
-        /// 
-        /// <code>
-        /// runner = session.GetRunner ();
-        /// runner.AddInput(myInput);
-        /// runner.Fetch(myOutput);
-        /// var results = runner.Run();
-        /// </code>
-        /// </remarks>
-        public class Runner
-        {
-            List<TFOutput> inputs = new List<TFOutput>(), outputs = new List<TFOutput>();
-            List<TFTensor> inputValues = new List<TFTensor>();
-            List<TFOperation> targets = new List<TFOperation>();
-            TFSession session;
+		/// <summary>
+		/// Use the runner class to easily configure inputs, outputs and targets to be passed to the session runner.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// The runner has a simple API that allows developers to call the AddTarget, AddInput, AddOutput and Fetch
+		/// to construct the parameters that will be passed to the TFSession.Run method.
+		/// </para>
+		/// <para>
+		/// Instances of this class are created by calling the GetRunner method on the TFSession.
+		/// </para>
+		/// <para>
+		/// The various methods in this class return an instance to the Runner itsel, to allow
+		/// to easily construct chains of execution like this:
+		/// </para>
+		/// <code>
+		/// var result = session.GetRunner ().AddINput (myInput).Fetch (MyOutput).Run ();
+		/// </code>
+		/// <para>
+		/// You do not need to chain the operations, this works just the same:
+		/// </para>
+		/// <code>
+		/// runner = session.GetRunner ();
+		/// runner.AddInput(myInput);
+		/// runner.Fetch(myOutput);
+		/// var results = runner.Run();
+		/// </code>
+		/// </remarks>
+		public class Runner
+		{
+			List<TFOutput> inputs = new List<TFOutput> (), outputs = new List<TFOutput> ();
+			List<TFTensor> inputValues = new List<TFTensor> ();
+			List<TFOperation> targets = new List<TFOperation> ();
+			TFSession session;
 
             internal Runner(TFSession session)
             {
@@ -2175,29 +2255,29 @@ namespace TensorFlow
                 return this;
             }
 
-            /// <summary>
-            /// Makes the Run method return the output of all the tensor referenced by outputs.
-            /// </summary>
-            /// <returns>The instance of runner, to allow chaining operations.</returns>
-            /// <param name="output">The outputs referencing a specified tensor.</param>
-            public Runner Fetch(params TFOutput[] outputs)
-            {
-                foreach (var output in outputs)
-                    this.outputs.Add(output);
-                return this;
-            }
+			/// <summary>
+			/// Makes the Run method return the output of all the tensor referenced by outputs.
+			/// </summary>
+			/// <returns>The instance of runner, to allow chaining operations.</returns>
+			/// <param name="outputs">The outputs referencing a specified tensor.</param>
+			public Runner Fetch (params TFOutput [] outputs)
+			{
+				foreach (var output in outputs)
+					this.outputs.Add (output);
+				return this;
+			}
 
-            /// <summary>
-            /// Makes the Run method return the output of all the tensor referenced by outputs.
-            /// </summary>
-            /// <returns>The instance of runner, to allow chaining operations.</returns>
-            /// <param name="output">The output sreferencing a specified tensor.</param>
-            public Runner Fetch(params string[] outputs)
-            {
-                foreach (var output in outputs)
-                    this.outputs.Add(ParseOutput(output));
-                return this;
-            }
+			/// <summary>
+			/// Makes the Run method return the output of all the tensor referenced by outputs.
+			/// </summary>
+			/// <returns>The instance of runner, to allow chaining operations.</returns>
+			/// <param name="outputs">The output sreferencing a specified tensor.</param>
+			public Runner Fetch (params string [] outputs)
+			{
+				foreach (var output in outputs)
+					this.outputs.Add (ParseOutput (output));
+				return this;
+			}
 
             /// <summary>
             /// Protocol buffer encoded block containing the metadata passed to the <see cref="M:TensorFlow.TFSession.Run"/> method.
@@ -2342,23 +2422,31 @@ namespace TensorFlow
             }
         }
 
-        public PartialRunToken PartialRunSetup(TFOutput[] inputs, TFOutput[] outputs, TFOperation[] targetOpers, TFStatus status = null)
-        {
-            if (handle == IntPtr.Zero)
-                ObjectDisposedException();
-            if (inputs == null)
-                throw new ArgumentNullException(nameof(inputs));
-            if (outputs == null)
-                throw new ArgumentNullException(nameof(outputs));
-            if (targetOpers == null)
-                throw new ArgumentNullException(nameof(targetOpers));
-
-            IntPtr returnHandle;
-            var cstatus = TFStatus.Setup(status);
-            int tLen = targetOpers.Length;
-            var topers = new IntPtr[tLen];
-            for (int i = 0; i < tLen; i++)
-                topers[i] = targetOpers[i].handle;
+		/// <summary>
+		/// Prepares the session for a partial run.
+		/// </summary>
+		/// <returns>A token that can be used to call <see cref="PartialRun"/> repeatedly.   To complete your partial run, you should call Dispose on the resulting method.</returns>
+		/// <param name="inputs">Inputs.</param>
+		/// <param name="outputs">Outputs.</param>
+		/// <param name="targetOpers">Target operations to run.</param>
+		/// <param name="status">Status.</param>
+		public PartialRunToken PartialRunSetup (TFOutput [] inputs, TFOutput [] outputs, TFOperation [] targetOpers, TFStatus status = null)
+		{
+			if (handle == IntPtr.Zero)
+				ObjectDisposedException ();			
+			if (inputs == null)
+				throw new ArgumentNullException (nameof (inputs));
+			if (outputs == null)
+				throw new ArgumentNullException (nameof (outputs));
+			if (targetOpers == null)
+				throw new ArgumentNullException (nameof (targetOpers));
+			
+			IntPtr returnHandle;
+			var cstatus = TFStatus.Setup (status);
+			int tLen = targetOpers.Length;
+			var topers = new IntPtr [tLen];
+			for (int i = 0; i < tLen; i++)
+				topers [i] = targetOpers [i].handle;
 
             TF_SessionPRunSetup(handle, inputs, inputs.Length, outputs, outputs.Length, topers, tLen, out returnHandle, cstatus.handle);
             cstatus.CheckMaybeRaise(status);
@@ -2454,37 +2542,91 @@ namespace TensorFlow
         }
     }
 
-    /// <summary>
-    /// The data type for a specific tensor.
-    /// </summary>
-    /// <remarks>
-    /// Tensors have uniform data types, all the elements of the tensor are of this
-    /// type and they dictate how TensorFlow will treat the data stored.   
-    /// </remarks>
-    public enum TFDataType : uint
-    {
-        Float = 1,
-        Double = 2,
-        Int32 = 3,
-        UInt8 = 4,
-        Int16 = 5,
-        Int8 = 6,
-        String = 7,
-        Complex64 = 8,
-        Complex = 8,
-        Int64 = 9,
-        Bool = 10,
-        QInt8 = 11,
-        QUInt8 = 12,
-        QInt32 = 13,
-        BFloat16 = 14,
-        QInt16 = 15,
-        QUInt16 = 16,
-        UInt16 = 17,
-        Complex128 = 18,
-        Half = 19,
-        Resource = 20
-    }
+	/// <summary>
+	/// The data type for a specific tensor.
+	/// </summary>
+	/// <remarks>
+	/// Tensors have uniform data types, all the elements of the tensor are of this
+	/// type and they dictate how TensorFlow will treat the data stored.   
+	/// </remarks>
+	public enum TFDataType : uint
+	{
+		/// <summary>
+		/// Single precission floatint point, 32-bits (C# float)
+		/// </summary>
+		Float = 1,
+		/// <summary>
+		/// Double precission floatint point, 64-bits (C# double)
+		/// </summary>
+		Double = 2,
+		/// <summary>
+		/// 32-bit signed integers (C# int)
+		/// </summary>
+		Int32 = 3,
+		/// <summary>
+		/// 8 bit unsigned integers (C# byte)
+		/// </summary>
+		UInt8 = 4,
+		/// <summary>
+		/// 16-bit signed integers (C# short)
+		/// </summary>
+		Int16 = 5,
+		/// <summary>
+		/// 8-bit signed integers (C# sbyte)
+		/// </summary>
+		Int8 = 6,
+		/// <summary>
+		/// Binary blob
+		/// </summary>
+		String = 7,
+		/// <summary>
+		/// Single precission complex numbers (32-bit floats)
+		/// </summary>
+		Complex64 = 8,
+		/// <summary>
+		/// 32-bit float based complex numbers
+		/// </summary>
+		Complex = 8,
+		/// <summary>
+		/// 64-bit signed integers (C# long)
+		/// </summary>
+		Int64 = 9,
+		Bool = 10,
+		/// <summary>
+		/// Quantized 8-bit signed integer
+		/// </summary>
+		QInt8 = 11,
+		/// <summary>
+		/// Quantized 8-bit unsigned integer
+		/// </summary>
+		QUInt8 = 12,
+		/// <summary>
+		/// Quantized 32-bit signed integer
+		/// </summary>
+		QInt32 = 13,
+		/// <summary>
+		/// Float32 truncated to 16 bits.  Only for cast operations.
+		/// </summary>
+		BFloat16 = 14,
+		/// <summary>
+		/// Quantized 16-bit signed integer
+		/// </summary>
+		QInt16 = 15,
+		/// <summary>
+		/// Quantized 16-bit unsigned integer
+		/// </summary>
+		QUInt16 = 16,
+		/// <summary>
+		/// 16-bit unsigned integers (C# long)
+		/// </summary>
+		UInt16 = 17,
+		/// <summary>
+		/// Double precission complex numbers (32-bit floats)
+		/// </summary>
+		Complex128 = 18,
+		Half = 19,
+		Resource = 20
+	}
 
     /// <summary>
     /// Status code for invoking a tensorflow operation.
@@ -2533,23 +2675,26 @@ namespace TensorFlow
 
     }
 
-    /// <summary>
-    /// Represents a specific output of an operation on a tensor.
-    /// </summary>
-    /// <remarks>
-    /// TFOutput objects represent one of the outputs of an operation in the graph
-    /// (TFGraph).  Outputs have a data type, and eventually a shape that you can 
-    /// retrieve by calling the <see cref="M:TensorFlow.TFGraph.GetShape"/> method.
-    /// 
-    /// These can be passed as an input argument to a function for adding operations 
-    /// to a graph, or to the TFSession's Run and GetRunner method as values to be
-    /// fetched.
-    /// </remarks>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct TFOutput
-    {
-        unsafe TF_Operation LLOperation;
-        public int Index;
+	/// <summary>
+	/// Represents a specific output of an operation on a tensor.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// TFOutput objects represent one of the outputs of an operation in the graph
+	/// (TFGraph).  Outputs have a data type, and eventually a shape that you can 
+	/// retrieve by calling the <see cref="M:TensorFlow.TFGraph.GetShape"/> method.
+	/// </para>
+	/// <para>
+	/// These can be passed as an input argument to a function for adding operations 
+	/// to a graph, or to the TFSession's Run and GetRunner method as values to be
+	/// fetched.
+	/// </para>
+	/// </remarks>
+	[StructLayout (LayoutKind.Sequential)]
+	public struct TFOutput
+	{
+		unsafe TF_Operation LLOperation;
+		public int Index;
 
         // extern int TF_OperationOutputNumConsumers (TF_Output oper_out);
         [DllImport(NativeBinding.TensorFlowLibrary)]
@@ -2712,39 +2857,45 @@ namespace TensorFlow
         }
     }
 
-    /// <summary>
-    /// Represents the shape of a tensor
-    /// </summary>
-    /// <remarks>
-    /// The shapes can be created by calling the constructor with the number of dimensions
-    /// in the shape.   The null value is used to specify that the shape is unknown,
-    /// an empty array is used to create a scalar, and other values are used to specify
-    /// the number of dimensions.
-    /// 
-    /// For the Unknown case, you can use <see cref="P:TensorFlor.TFShape.Unknown"/>, for
-    /// scalars, you can use the <see cref="P:TensorFlor.TFShape.Scalar"/> shape.
-    /// 
-    /// To create a 2-element vector, use:
-    /// new TFShape (2)
-    /// 
-    /// To create a 2x3 matrix, use:
-    /// new TFShape (2, 3)
-    /// 
-    /// To create a shape with an unknown number of elements, you can pass the value
-    /// -1.  This is typically used to indicate the shape of tensors that represent a
-    /// variable-sized batch of values.
-    /// 
-    /// 
-    /// To create a matrix with 4 columns and an unknown number of rows:
-    /// var batch = new TFShape (-1, 4)
-    /// </remarks>
-    public class TFShape
-    {
-        /// <summary>
-        /// Represents an unknown number of dimensions in the tensor.
-        /// </summary>
-        /// <value>The unknown.</value>
-        public static TFShape Unknown => new TFShape(null);
+	/// <summary>
+	/// Represents the shape of a tensor
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// The shapes can be created by calling the constructor with the number of dimensions
+	/// in the shape.   The null value is used to specify that the shape is unknown,
+	/// an empty array is used to create a scalar, and other values are used to specify
+	/// the number of dimensions.
+	/// </para>
+	/// <para>
+	/// For the Unknown case, you can use <see cref="P:TensorFlor.TFShape.Unknown"/>, for
+	/// scalars, you can use the <see cref="P:TensorFlor.TFShape.Scalar"/> shape.
+	/// </para>
+	/// <para>
+	/// To create a 2-element vector, use:
+	/// new TFShape (2)
+	/// </para>
+	/// <para>
+	/// To create a 2x3 matrix, use:
+	/// new TFShape (2, 3)
+	/// </para>
+	/// <para>
+	/// To create a shape with an unknown number of elements, you can pass the value
+	/// -1.  This is typically used to indicate the shape of tensors that represent a
+	/// variable-sized batch of values.
+	/// </para>
+	/// <para>
+	/// To create a matrix with 4 columns and an unknown number of rows:
+	/// var batch = new TFShape (-1, 4)
+	/// </para>
+	/// </remarks>
+	public class TFShape
+	{
+		/// <summary>
+		/// Represents an unknown number of dimensions in the tensor.
+		/// </summary>
+		/// <value>The unknown.</value>
+		public static TFShape Unknown => new TFShape (null);
 
         /// <summary>
         /// This shape is used to represent scalar values.
