@@ -179,6 +179,7 @@ namespace TensorFlow
 	public abstract class TFDisposable : IDisposable
 	{
 		internal IntPtr handle;
+        bool disposed = false;
 
         /// <summary>
         /// Returns the opaque handle to the object that this TFDisposable owns.
@@ -215,8 +216,12 @@ namespace TensorFlow
         /// the garbage collector can reclaim the memory that the <see cref="T:TensorFlow.TFDisposable"/> was occupying.</remarks>
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            if (!disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                disposed = true;
+            }
         }
 
         ~TFDisposable()
@@ -659,7 +664,7 @@ namespace TensorFlow
             {
                 TF_GraphImportGraphDef(handle, graphDef.LLBuffer, options.handle, cstatus.handle);
             }
-            cstatus.CheckMaybeRaise(status);
+            cstatus.CheckMaybeRaise(status, false);
         }
 
         /// <summary>
@@ -700,8 +705,12 @@ namespace TensorFlow
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
             var cstatus = TFStatus.Setup(status);
+
+            //ck
             using (var tb = new TFBuffer(buffer, 0, buffer.Length))
+            {
                 Import(tb, options, status);
+            }
 
             cstatus.CheckMaybeRaise(cstatus);
         }

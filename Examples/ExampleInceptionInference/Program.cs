@@ -129,6 +129,9 @@ namespace ExampleInceptionInference
 
                     var result = output[0];
                     var rshape = result.Shape;
+                    foreach (long l in rshape)
+                        Console.Write($"{l} ");
+                    Console.WriteLine("");
                     if (result.NumDims != 2 || rshape[0] != 1)
                     {
                         var shape = "";
