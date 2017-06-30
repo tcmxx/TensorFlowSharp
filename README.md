@@ -2,6 +2,13 @@
 
 # This project is Forked!
 
+Git ignored datas: [google drive](https://drive.google.com/file/d/0B6sKKuG8GHKZdFA1QkEtMVhJRVE/view?usp=sharinghttps://drive.google.com/file/d/0B6sKKuG8GHKZdFA1QkEtMVhJRVE/view?usp=sharing)
+
+Before build project, put datas(native binaries, some images... etc) into GitIgnoredDatas/
+
+It contains mostly libtensorflow (Windows cpu, Windows gpu(anaconda, I tried put depend dlls too), Android native binaries).
+
+# About TensorFlowSharp
 TensorFlowSharp are .NET bindings to the TensorFlow library published here:
 
 https://github.com/tensorflow/tensorflow
