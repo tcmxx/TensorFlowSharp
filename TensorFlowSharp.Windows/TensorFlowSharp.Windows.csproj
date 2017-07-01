@@ -72,10 +72,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\GitIgnoredDatas\windows\cpu\libtensorflow.dll">
+    <AdditionalFiles Include="..\GitIgnoredDatas\windows\cpu\libtensorflow.dll">
       <Link>libtensorflow.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TensorFlowSharp\TensorFlowSharp.csproj">
