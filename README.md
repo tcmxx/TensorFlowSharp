@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/migueldeicaza/TensorFlowSharp.svg?branch=master)](https://travis-ci.org/migueldeicaza/TensorFlowSharp)
 
-# This project is Sub project of (This)[https://github.com/gmlwns2000/Vision]
+# This project is Sub project of [This](https://github.com/gmlwns2000/Vision)
 
 Git ignored datas: [google drive](https://drive.google.com/file/d/0B6sKKuG8GHKZdFA1QkEtMVhJRVE/view?usp=sharinghttps://drive.google.com/file/d/0B6sKKuG8GHKZdFA1QkEtMVhJRVE/view?usp=sharing)
 
