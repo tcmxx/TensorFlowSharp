@@ -5,6 +5,7 @@ This project is not very stable. If you get trouble while using library, plz mak
 Git ignored datas: [Google Drive](https://drive.google.com/open?id=0B6sKKuG8GHKZcHVoclYzYXhMeHc)
 
 Before build project, put datas(native binaries, some images... etc) into GitIgnoredDatas/
+
 It contains libtensorflow files (Windows cpu, Windows gpu(from anaconda python package), Android native binaries).
 
 # About TensorFlowSharp
