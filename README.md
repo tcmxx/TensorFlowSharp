@@ -1,4 +1,4 @@
-# This project is Sub project of [This](https://github.com/gmlwns2000/Vision)
+# This project is forked project of [This](https://github.com/gmlwns2000/Vision)
 
 This project is not very stable. If you get trouble while using library, plz make a issue on Github!
 
