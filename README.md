@@ -1,12 +1,11 @@
-[![Build Status](https://travis-ci.org/migueldeicaza/TensorFlowSharp.svg?branch=master)](https://travis-ci.org/migueldeicaza/TensorFlowSharp)
-
 # This project is Sub project of [This](https://github.com/gmlwns2000/Vision)
 
-Git ignored datas: [google drive](https://drive.google.com/file/d/0B6sKKuG8GHKZdFA1QkEtMVhJRVE/view?usp=sharinghttps://drive.google.com/file/d/0B6sKKuG8GHKZdFA1QkEtMVhJRVE/view?usp=sharing)
+This project is not very stable. If you get trouble while using library, plz make a issue on Github!
+
+Git ignored datas: [Google Drive](https://drive.google.com/open?id=0B6sKKuG8GHKZcHVoclYzYXhMeHc)
 
 Before build project, put datas(native binaries, some images... etc) into GitIgnoredDatas/
-
-It contains mostly libtensorflow (Windows cpu, Windows gpu(anaconda, I tried put depend dlls too), Android native binaries).
+It contains libtensorflow files (Windows cpu, Windows gpu(from anaconda python package), Android native binaries).
 
 # About TensorFlowSharp
 TensorFlowSharp are .NET bindings to the TensorFlow library published here:
