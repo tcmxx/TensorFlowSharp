@@ -74,7 +74,7 @@
   <ItemGroup>
     <None Include="..\GitIgnoredDatas\windows\cpu\libtensorflow.dll">
       <Link>libtensorflow.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
