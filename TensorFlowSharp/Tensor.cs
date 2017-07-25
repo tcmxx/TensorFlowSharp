@@ -47,7 +47,9 @@ namespace TensorFlow
 		static extern unsafe TF_Tensor TF_NewTensor (TFDataType dataType, IntPtr zeroDims, int num_dims, IntPtr data, size_t len, Deallocator deallocator, IntPtr deallocator_arg);
 
 		internal TFTensor (IntPtr handle) : base (handle) { }
-		internal static void FreeTensorData (IntPtr data, IntPtr len, IntPtr closure)
+
+        [MonoPInvokeCallback(typeof(Deallocator))]
+        internal static void FreeTensorData (IntPtr data, IntPtr len, IntPtr closure)
 		{
 			Marshal.FreeHGlobal (data);
 		}

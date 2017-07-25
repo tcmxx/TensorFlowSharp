@@ -12,7 +12,27 @@ using size_t = System.UIntPtr;
 
 namespace TensorFlow
 {
-	[StructLayout (LayoutKind.Sequential)]
+    /// <summary>
+	/// This attribute can be applied to callback functions that will be invoked
+	/// from unmanaged code to managed code.
+	/// </summary>
+	/// <remarks>
+	/// <code>
+	/// [TensorFlow.MonoPInvokeCallback (typeof (BufferReleaseFunc))]
+	/// internal static void MyFreeFunc (IntPtr data, IntPtr length){..}
+	/// </code>
+	/// </remarks>
+	public sealed class MonoPInvokeCallbackAttribute : Attribute
+    {
+        /// <summary>
+        /// Use this constructor to annotate the type of the callback function that 
+        /// will be invoked from unmanaged code.
+        /// </summary>
+        /// <param name="t">T.</param>
+        public MonoPInvokeCallbackAttribute(Type t) { }
+    }
+
+    [StructLayout (LayoutKind.Sequential)]
 	internal struct LLBuffer
 	{
 		internal IntPtr data;
@@ -93,7 +113,8 @@ namespace TensorFlow
 				buf->data_deallocator = Marshal.GetFunctionPointerForDelegate (release);
 		}
 
-		internal static void FreeBlock (IntPtr data, IntPtr lenght)
+        [MonoPInvokeCallback(typeof(BufferReleaseFunc))]
+        internal static void FreeBlock (IntPtr data, IntPtr lenght)
 		{
 			Marshal.FreeHGlobal(data);
 		}
