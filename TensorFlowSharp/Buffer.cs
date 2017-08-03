@@ -120,12 +120,13 @@ namespace TensorFlow
 		}
 
 		static IntPtr FreeBufferFunc;
-
+        static BufferReleaseFunc FreeBlockDelegate;
         static TFBuffer()
         {
             //int
             //FreeBufferFunc = Marshal.GetFunctionPointerForDelegate<BufferReleaseFunc> (FreeBlock);
-            FreeBufferFunc = Marshal.GetFunctionPointerForDelegate(new BufferReleaseFunc(FreeBlock));
+            FreeBlockDelegate = FreeBlock;
+            FreeBufferFunc = Marshal.GetFunctionPointerForDelegate(FreeBlockDelegate);
         }
 
 
