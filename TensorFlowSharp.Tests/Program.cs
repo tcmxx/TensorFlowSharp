@@ -38,6 +38,9 @@ namespace TensorFlowSharp.Tests
                         case "importpb":
                             ImportPb();
                             break;
+                        case "rnn":
+                            RNNTest();
+                            break;
                         case "exit":
                             return;
                     }
@@ -47,6 +50,12 @@ namespace TensorFlowSharp.Tests
                     Console.WriteLine(ex.ToString());
                 }
             }
+        }
+
+        public static void RNNTest()
+        {
+            RNNTester t = new RNNTester();
+            t.Run();
         }
 
         public static void ImportPb()
