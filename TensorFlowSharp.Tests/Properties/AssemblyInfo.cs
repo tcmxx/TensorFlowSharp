@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // 제어됩니다. 어셈블리와 관련된 정보를 수정하려면
 // 이러한 특성 값을 변경하세요.
 [assembly: AssemblyTitle("TensorFlowSharp.Tests")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("TensorFlowSharp Windows Test App")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("TensorFlowSharp")]
 [assembly: AssemblyProduct("TensorFlowSharp.Tests")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright ©  2017 / AinL")]
+[assembly: AssemblyTrademark("TensorFlowSharp")]
 [assembly: AssemblyCulture("")]
 
 // ComVisible을 false로 설정하면 이 어셈블리의 형식이 COM 구성 요소에 

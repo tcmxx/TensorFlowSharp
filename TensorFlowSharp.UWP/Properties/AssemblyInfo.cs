@@ -27,3 +27,12 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: ComVisible(false)]
+[assembly: AssemblyTitleAttribute("TensorFlowSharp.UWP")]
+[assembly: AssemblyDescriptionAttribute("TensorFlowSharp UWP Native Bindings")]
+[assembly: AssemblyCompanyAttribute("TensorFlowSharp")]
+[assembly: AssemblyProductAttribute("TensorFlowSharp.UWP")]
+[assembly: AssemblyCopyrightAttribute("TensorFlowSharp")]
+[assembly: AssemblyTrademarkAttribute("Copyright (c) 2017 / AinL")]
+[assembly: AssemblyVersionAttribute("1.0.0.0")]
+[assembly: AssemblyFileVersionAttribute("1.0.0.0")]
+

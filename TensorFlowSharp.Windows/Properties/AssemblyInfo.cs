@@ -11,7 +11,7 @@ using System;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("TensorFlowSharp")]
 [assembly: AssemblyProduct("TensorFlowSharp.Windows")]
-[assembly: AssemblyCopyright("Copyright © 2017")]
+[assembly: AssemblyCopyright("Copyright © 2017 / AinL")]
 [assembly: AssemblyTrademark("TensorFlowSharp")]
 [assembly: AssemblyCulture("")]
 

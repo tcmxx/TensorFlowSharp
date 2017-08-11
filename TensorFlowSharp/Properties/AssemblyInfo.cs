@@ -7,11 +7,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TensorFlowSharp")]
-[assembly: AssemblyDescription("TensorFlow for DotNet Platforms")]
+[assembly: AssemblyDescription("TensorFlow for Xamarin")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("AinL")]
 [assembly: AssemblyProduct("TensorFlowSharp")]
-[assembly: AssemblyCopyright("Copyright © 2017")]
+[assembly: AssemblyCopyright("Copyright © 2017 / AinL")]
 [assembly: AssemblyTrademark("TensorFlowSharp")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]

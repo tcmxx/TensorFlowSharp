@@ -5,12 +5,12 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle ("ExampleInceptionInference")]
-[assembly: AssemblyDescription ("")]
+[assembly: AssemblyDescription("TensorFlowSharp Object Inference App")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("")]
-[assembly: AssemblyProduct ("")]
+[assembly: AssemblyCompany("TensorFlowSharp")]
+[assembly: AssemblyProduct("TensorFlowSharp Inference")]
 [assembly: AssemblyCopyright ("miguel")]
-[assembly: AssemblyTrademark ("")]
+[assembly: AssemblyTrademark("Copyright (c) 2017 / AinL")]
 [assembly: AssemblyCulture ("")]
 
 // The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
