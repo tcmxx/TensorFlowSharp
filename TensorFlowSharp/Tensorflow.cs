@@ -68,12 +68,10 @@ namespace TensorFlow
             }
             set
             {
-                if (_current == null)
+                if (_current != value)
                 {
                     _current = value;
                 }
-                else
-                    throw new Exception("NativeBinding is alreay Inited");
             }
         }
 
