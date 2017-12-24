@@ -93,7 +93,6 @@
       <Link>Native\arm64-v8a\libComputeCpp.so</Link>
       <Abi>arm64-v8a</Abi>
     </EmbeddedNativeLibrary>
-    <None Include="lib\arm64-v8a\libOpenCL.so.1" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
