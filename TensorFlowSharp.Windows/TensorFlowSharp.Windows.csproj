@@ -73,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\GitIgnoredDatas\windows\cpu\libtensorflow.dll">
-      <Link>libtensorflow.dll</Link>
+      <Link>cpu\libtensorflow.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -82,6 +82,64 @@
       <Project>{a6e9a29f-e57f-42aa-824c-9581b2783e5f}</Project>
       <Name>TensorFlowSharp</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\GitIgnoredDatas\windows\gpu\libtensorflow.dll">
+      <Link>gpu\libtensorflow.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\api-ms-win-crt-convert-l1-1-0.dll">
+      <Link>gpu\api-ms-win-crt-convert-l1-1-0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\api-ms-win-crt-environment-l1-1-0.dll">
+      <Link>gpu\api-ms-win-crt-environment-l1-1-0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\api-ms-win-crt-filesystem-l1-1-0.dll">
+      <Link>gpu\api-ms-win-crt-filesystem-l1-1-0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\api-ms-win-crt-heap-l1-1-0.dll">
+      <Link>gpu\api-ms-win-crt-heap-l1-1-0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\api-ms-win-crt-math-l1-1-0.dll">
+      <Link>gpu\api-ms-win-crt-math-l1-1-0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\api-ms-win-crt-runtime-l1-1-0.dll">
+      <Link>gpu\api-ms-win-crt-runtime-l1-1-0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\api-ms-win-crt-stdio-l1-1-0.dll">
+      <Link>gpu\api-ms-win-crt-stdio-l1-1-0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\api-ms-win-crt-string-l1-1-0.dll">
+      <Link>gpu\api-ms-win-crt-string-l1-1-0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\api-ms-win-crt-time-l1-1-0.dll">
+      <Link>gpu\api-ms-win-crt-time-l1-1-0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\api-ms-win-crt-utility-l1-1-0.dll">
+      <Link>gpu\api-ms-win-crt-utility-l1-1-0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\python35.dll">
+      <Link>gpu\python35.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\ucrtbase.dll">
+      <Link>gpu\ucrtbase.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\GitIgnoredDatas\windows\libs\vcruntime140.dll">
+      <Link>gpu\vcruntime140.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

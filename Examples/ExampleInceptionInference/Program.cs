@@ -66,7 +66,7 @@ namespace ExampleInceptionInference
 
 		public static void Main (string [] args)
 		{
-            TensorFlowSharp.Windows.NativeBinding.Init();
+            TensorFlowSharp.Windows.NativeBinding.Init(true);
 
             Console.WriteLine("Preparing");
             Console.WriteLine("TF Version: " + TFCore.Version);
