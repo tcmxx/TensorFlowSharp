@@ -1,8 +1,8 @@
 # This project is forked project of [This](https://github.com/gmlwns2000/Vision)
 
-This project is not very stable. If you get trouble while using library, plz make a issue on Github!
+This project is not very stable. If you get trouble while using library, please make a issue on Github!
 
-Git ignored datas: [Google Drive](https://drive.google.com/open?id=0B6sKKuG8GHKZcHVoclYzYXhMeHc)
+Git ignored datas: [Google Drive](https://drive.google.com/open?id=1RNHTLujFPzrdjUHL77g75xrVb5auAW2J)
 
 Before build project, put datas(native binaries, some images... etc) into GitIgnoredDatas/
 
