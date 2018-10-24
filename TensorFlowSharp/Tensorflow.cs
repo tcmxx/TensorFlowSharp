@@ -169,6 +169,47 @@ namespace TensorFlow
             return new TFBuffer(TF_GetAllOpList());
         }
 
+        [DllImport(NativeBinding.TensorFlowLibrary)]
+        static extern unsafe IntPtr TF_GetAllRegisteredKernels(TF_Status status);
+
+        /// <summary>
+        /// Returns a serialized KernelList protocol buffer containing KernelDefs for all registered kernels
+        /// </summary>
+        /// <param name="status">Status buffer, if specified a status code will be left here, if not specified, a <see cref="T:TensorFlow.TFException"/> exception is raised if there is an error.</param>
+        /// <returns>The all registered kernels.</returns>
+        public static TFBuffer GetAllRegisteredKernels(TFStatus status = null)
+        {
+            var cstatus = TFStatus.Setup(status);
+
+            var r = TF_GetAllRegisteredKernels(cstatus.Handle);
+            if (!cstatus.CheckMaybeRaise(status, last: false))
+                return null;
+            return new TFBuffer(r);
+        }
+
+        [DllImport(NativeBinding.TensorFlowLibrary)]
+        static extern unsafe IntPtr TF_GetRegisteredKernelsForOp(string name, TF_Status status);
+        /// <summary>
+        /// Returns a serialized KernelList protocol buffer containing KernelDefs for all
+        /// kernels registered for the operation specified.
+        /// </summary>
+        /// <param name="name">The operation to look up.</param>
+        /// <param name="status">Status buffer, if specified a status code will be left here, if not specified, a <see cref="T:TensorFlow.TFException"/> exception is raised if there is an error.</param>
+        /// <returns>The registered kernels for the specified operation.</returns>
+        public static TFBuffer GetAllRegisteredKernels(string name, TFStatus status = null)
+        {
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            var cstatus = TFStatus.Setup(status);
+
+            var r = TF_GetRegisteredKernelsForOp(name, cstatus.Handle);
+            if (!cstatus.CheckMaybeRaise(status, last: false))
+                return null;
+            return new TFBuffer(r);
+        }
+
+
+
         static void CheckSize()
         {
             unsafe
@@ -222,13 +263,7 @@ namespace TensorFlow
 
         static TFDisposable()
         {
-            try
-            {
-                TFCore.Init();
-            }catch(Exception e)
-            {
-                throw e;
-            }
+            TFCore.Init();
         }
 
         /// <summary>
@@ -286,6 +321,46 @@ namespace TensorFlow
         internal static void ObjectDisposedException()
         {
             throw new ObjectDisposedException("The object was disposed");
+        }
+    }
+
+    /// <summary>
+    /// ase class for many TensorFlow data types that provides a common idiom to dispose and
+    /// release resources associated with the native data types and whose unmanaged resource
+    /// disposing can be called from a background thread (the finalizer).   Users do not 
+    /// need to deal with this class.
+    /// </summary>
+    /// <remarks>
+    /// Some object deletion APIs in TensorFlow can be invoked from a background thread, 
+    /// so the release methods are suitable to be invoked from the Finalizer thread, in
+    /// those scenarios, subclass from this class rather than the TFDisposable class.
+    /// </remarks>
+    public abstract class TFDisposableThreadSafe : TFDisposable
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:TensorFlow.TFDisposable"/> class
+        /// from the handle that it will wrap.   
+        /// </summary>
+        public TFDisposableThreadSafe(IntPtr handle) : base(handle)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:TensorFlow.TFDisposableThreadSafe"/> class.
+        /// </summary>
+        public TFDisposableThreadSafe()
+        { }
+
+        /// <summary>
+        /// Dispose the object, unlike the default implementat in TFDisposable, 
+        /// this will release the unmanaged resources from a background thread.
+        /// </summary>
+        /// <param name="disposing">If set to <c>true</c> disposing.</param>
+        public override void Dispose(bool disposing)
+        {
+            if (handle != IntPtr.Zero)
+                NativeDispose(handle);
+            handle = IntPtr.Zero;
         }
     }
 
@@ -444,7 +519,7 @@ namespace TensorFlow
         {
             if (incomingStatus == null)
             {
-                if (handle == IntPtr.Zero) { }
+                if (handle == IntPtr.Zero)
                     //Console.WriteLine("oops");
                 if (StatusCode != TFCode.Ok)
                 {
@@ -565,7 +640,7 @@ namespace TensorFlow
     /// "hot", and add a "sub" operation there the result will be "demo/hot/sub".
     /// </para>
     /// </remarks>
-    public partial class TFGraph : TFDisposable
+    public partial class TFGraph : TFDisposableThreadSafe
     {
         // extern TF_Graph * TF_NewGraph ();
         [DllImport(NativeBinding.TensorFlowLibrary)]
@@ -767,6 +842,9 @@ namespace TensorFlow
         /// <param name="buffer">A byte array containing the serialized graph.</param>
         /// <param name="options">Importing graph options.</param>
         /// <param name="status">Status buffer, if specified a status code will be left here, if not specified, a <see cref="T:TensorFlow.TFException"/> exception is raised if there is an error.</param>
+        /// <remarks>
+        ///   If you are tryig to load a file stored using the SavedModel file format, you should use the <see cref="T:TensorFlow.TFSession.FromSavedModel"/> API instead.
+        /// </remarks>
         public void Import(byte[] buffer, TFImportGraphDefOptions options, TFStatus status = null)
         {
             if (handle == IntPtr.Zero)
@@ -948,6 +1026,9 @@ namespace TensorFlow
         /// <param name="options">Import options.</param>
         /// <param name="returnOutputs">Array large enough to contain all the return options.</param>
         /// <param name="status">Status buffer, if specified a status code will be left here, if not specified, a <see cref="T:TensorFlow.TFException"/> exception is raised if there is an error.</param>
+        /// <remarks>
+        ///   If you are tryig to load a file stored using the SavedModel file format, you should use the <see cref="T:TensorFlow.TFSession.FromSavedModel"/> API instead.
+        /// </remarks>
         public void ImportGraphDef(TFBuffer graphDef, TFImportGraphDefOptions options, TFOutput[] returnOutputs, TFStatus status = null)
         {
             if (handle == IntPtr.Zero)
@@ -1147,6 +1228,67 @@ namespace TensorFlow
                                 fixed (TFOutput* pdx = &dx[0])
                                 {
                                     TF_AddGradients(handle, py, y.Length, px, x.Length, pdx, cstatus.Handle, pret);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (!cstatus.CheckMaybeRaise(status, last: false))
+                return null;
+            return ret;
+        }
+
+        [DllImport(NativeBinding.TensorFlowLibrary)]
+        static extern unsafe void TF_AddGradientsWithPrefix(TF_Graph graph, string prefix, TFOutput* ys, int ny, TFOutput* xs, int nx, TFOutput* dx, TF_Status status, TFOutput* dy);
+        /// <summary>
+        /// Adds a gradient: the operations needed to compute the partial derivatives of sum of <paramref name="y"/>` wrt to <paramref name="x"/>.
+        /// </summary>
+        /// <returns>The partial derivatives, the size of the array is the same as the length of the <paramref name="y"/> array.</returns>
+        /// <param name="prefix">names the scope into which all gradients operations are being added.  This must be unique within 
+        /// the provided graph otherwise this operation will fail.  If the value is null, the default prefixing behaviour takes
+        /// place, see AddGradients for more details.
+        /// </param>
+        /// <param name="y">The y elements.</param>
+        /// <param name="x">The x elements.</param>
+        /// <param name="dx">Initial gradients, which represent the symbolic partial derivatives of some loss function `L` w.r.t. <paramref name="y"/> ).   
+        /// If the parameter is null, the implementation will use dx for 'OnesLike' for all shapes in <paramref name="y"/></param>
+        /// <param name="status">Status buffer, if specified a status code will be left here, if not specified, a <see cref="T:TensorFlow.TFException"/> exception is raised if there is an error.</param>
+        /// <remarks>
+        /// d(y[0] + y[1]+ ...)/dx[0], d(y[0] + y[1] + ...)/dx[1]z...
+        /// </remarks>
+        public TFOutput[] AddGradients(string prefix, TFOutput[] y, TFOutput[] x, TFOutput[] dx = null, TFStatus status = null)
+        {
+            if (y == null)
+                throw new ArgumentNullException(nameof(y));
+            if (x == null)
+                throw new ArgumentNullException(nameof(x));
+            if (dx != null)
+            {
+                if (dx.Length != y.Length)
+                    throw new ArgumentException("If dx is not null, the size of the gradients must match the size of y", nameof(dx));
+            }
+
+            var cstatus = TFStatus.Setup(status);
+
+            var ret = new TFOutput[x.Length];
+            unsafe
+            {
+                fixed (TFOutput* pret = &ret[0])
+                {
+                    fixed (TFOutput* py = &y[0])
+                    {
+                        fixed (TFOutput* px = &x[0])
+                        {
+                            if (dx == null)
+                            {
+                                TF_AddGradientsWithPrefix(handle, prefix, py, y.Length, px, x.Length, (TFOutput*)null, cstatus.Handle, pret);
+                            }
+                            else
+                            {
+                                fixed (TFOutput* pdx = &dx[0])
+                                {
+                                    TF_AddGradientsWithPrefix(handle, prefix, py, y.Length, px, x.Length, pdx, cstatus.Handle, pret);
                                 }
                             }
                         }
@@ -1381,6 +1523,15 @@ namespace TensorFlow
                 tensor = null;
             return ret;
         }
+
+        [DllImport(NativeBinding.TensorFlowLibrary)]
+        static extern string TF_GraphDebugString(TF_Graph graph, out IntPtr len);
+
+        public override string ToString()
+        {
+            IntPtr len;
+            return TF_GraphDebugString(Handle, out len);
+        }
     }
 
     //
@@ -1464,6 +1615,11 @@ namespace TensorFlow
                 return new TFFunction(handle);
             }
         }
+
+        [DllImport(NativeBinding.TensorFlowLibrary)]
+        static extern unsafe IntPtr TF_FunctionName(IntPtr handle);
+
+        public string Name => Marshal.PtrToStringAnsi(handle);
     }
 
     /// <summary>
@@ -1958,6 +2114,8 @@ namespace TensorFlow
             for (int i = 0; i < tensor.Length; i++)
                 unmanaged[i] = tensor[i].handle;
             TF_SetAttrTensorList(handle, attrName, unmanaged, unmanaged.Length, cstatus.handle);
+            // prevent finalization of managed TFTensors
+            GC.KeepAlive(tensor);
             cstatus.CheckMaybeRaise(status);
             return this;
         }
@@ -2547,7 +2705,7 @@ namespace TensorFlow
     /// be kept in sync.
     /// </para>
     /// </remarks>
-    public class TFSession : TFDisposable
+    public class TFSession : TFDisposableThreadSafe
     {
         // extern TF_Session * TF_NewSession (TF_Graph *graph, const TF_SessionOptions *opts, TF_Status *status);
         [DllImport(NativeBinding.TensorFlowLibrary)]
@@ -2654,7 +2812,7 @@ namespace TensorFlow
         }
 
         /// <summary>
-        /// Creates a session and graph from a saved session model
+        /// Creates a session and graph from a model stored in the SavedModel file format.
         /// </summary>
         /// <returns>On success, this populates the provided <paramref name="graph"/> with the contents of the graph stored in the specified model and <paramref name="metaGraphDef"/> with the MetaGraphDef of the loaded model.</returns>
         /// <param name="sessionOptions">Session options to use for the new session.</param>
@@ -2665,8 +2823,14 @@ namespace TensorFlow
         /// <param name="metaGraphDef">On success, this will be populated on return with the contents of the MetaGraphDef (can be null).</param>
         /// <param name="status">Status buffer, if specified a status code will be left here, if not specified, a <see cref="T:TensorFlow.TFException"/> exception is raised if there is an error.</param>
         /// <remarks>
+        /// <para>
         /// This function creates a new session using the specified <paramref name="sessionOptions"/> and then initializes
-        /// the state (restoring tensors and other assets) using <paramref name="runOptions"/>
+        /// the state (restoring tensors and other assets) using <paramref name="runOptions"/>.
+        /// </para>
+        /// <para>
+        /// This function loads the data that was saved using the SavedModel file format, as described
+        /// here: https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/saved_model/README.md
+        /// </para>
         /// </remarks>
         public TFSession FromSavedModel(TFSessionOptions sessionOptions, TFBuffer runOptions, string exportDir, string[] tags, TFGraph graph, TFBuffer metaGraphDef, TFStatus status = null)
         {
@@ -2976,8 +3140,8 @@ namespace TensorFlow
         /// <param name="inputValues">Input values.</param>
         /// <param name="outputs">Output nodes.</param>
         /// <param name="targetOpers">Target operations to execute.</param>
-        /// <param name="runMetadata">Run metadata.</param>
-        /// <param name="runOptions">Run options.</param>
+        /// <param name="runMetadata">Run metadata, a buffer containing the protocol buffer encoded value for https://github.com/tensorflow/tensorflow/blob/r1.9/tensorflow/core/protobuf/config.proto.</param>
+        /// <param name="runOptions">Run options, a buffer containing the protocol buffer encoded value for https://github.com/tensorflow/tensorflow/blob/r1.9/tensorflow/core/protobuf/config.proto.</param>
         /// <param name="status">Status buffer, if specified a status code will be left here, if not specified, a <see cref="T:TensorFlow.TFException"/> exception is raised if there is an error.</param>
         public TFTensor[] Run(TFOutput[] inputs, TFTensor[] inputValues, TFOutput[] outputs, TFOperation[] targetOpers = null, TFBuffer runMetadata = null, TFBuffer runOptions = null, TFStatus status = null)
         {
@@ -3019,6 +3183,10 @@ namespace TensorFlow
                 TF_SessionRun(handle, runOptions == null ? null : runOptions.LLBuffer, inputs, ivals, iLen, outputs, ovals, oLen, topers, tLen, runMetadata == null ? null : runMetadata.LLBuffer, cstatus.handle);
             }
             cstatus.CheckMaybeRaise(status);
+
+            // prevent finalization of managed TFTensors
+            GC.KeepAlive(inputValues);
+
             var result = new TFTensor[oLen];
             for (int i = 0; i < oLen; i++)
             {
@@ -3125,6 +3293,9 @@ namespace TensorFlow
                 TF_SessionPRun(handle, token.token, inputs, ivals, iLen, outputs, ovals, oLen, topers, tLen, cstatus.handle);
             }
             cstatus.CheckMaybeRaise(status);
+
+            // prevent finalization of managed TFTensors
+            GC.KeepAlive(inputValues);
 
             var result = new TFTensor[oLen];
             for (int i = 0; i < oLen; i++)
@@ -3948,6 +4119,7 @@ namespace TensorFlow
             return shape.AsTensor();
         }
     }
+
 
 
 }

@@ -5,6 +5,9 @@
 //   Miguel de Icaza (miguel@microsoft.com)
 //
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -13,26 +16,50 @@ using TF_Tensor = System.IntPtr;
 
 namespace TensorFlow
 {
-	/// <summary>
-	/// TFTensor holds a multi-dimensional array of elements of a single data type.
-	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// You can create tensors with the various constructors in this class, or using
-	/// the implicit conversions from various data types into a TFTensor.
-	///</para>
-	/// <para>
-	/// The implicit conversions for basic types produce tensors of one dimesion with
-	/// a single element, while the implicit conversion from an array, expects a multi-dimensional
-	/// array that is converted into a tensor of the right dimensions.
-	/// </para>
-	/// <para>
-	/// The special "String" tensor data type that you will find in TensorFlow documentation
-	/// really represents a byte array.   You can create string tensors by using the <see cref="M:TensorFlow.TFTensor.CreateString"/> 
-	/// method that takes a byte array buffer as input.
-	/// </para>
-	/// </remarks>
-	public class TFTensor : TFDisposable
+    /// <summary>
+    /// TFTensor holds a multi-dimensional array of elements of a single data type.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// You can create tensors with the various constructors in this class, or using
+    /// the implicit conversions from various data types into a TFTensor, including
+    /// the creation of tensors from simple constants (returning a tensor that reprensets
+    /// a scalar, that is, it is a 0D tensor), arrays (returning a tensor of a single
+    /// dimension, 1D) or arbitrary multidimensional arrays.
+    ///</para>
+    /// <para>
+    ///   Given a tensor, you can retrieve the number of dimensions in it via the
+    ///   NumDims property, or you can retrieve the shape of a tensor, that is how many
+    ///   elements on each dimension the tensor has, by fetching the Shape property.
+    /// </para>
+    /// <para>
+    /// The implicit conversions for basic types produce tensors of one dimesion with
+    /// a single element, while the implicit conversion from an array, expects a multi-dimensional
+    /// array that is converted into a tensor of the right dimensions.
+    /// </para>
+    /// <para>
+    /// The special "String" tensor data type that you will find in TensorFlow documentation
+    /// really represents a byte array.   You can create string tensors by using the <see cref="M:TensorFlow.TFTensor.CreateString"/> 
+    /// method that takes a byte array buffer as input.
+    /// </para>
+    /// <example>
+    /// <code>
+    ///   TFTensor scalar = 1;           // Creates a 0D tensor, for the integer value 1
+    ///   int d = scalar.NumDims;        // d will be equal to zero, as it is a 0D tensor
+    ///   long [] shape = scalar.Shape   // returns an empty array, as it is a 0D tensor
+    ///   
+    ///   TFTensor list = new [] {1,2,3} // Creates a 1D tensor, or vector, for the values 1, 2, 3
+    ///   d = list.NumDims;              // d will be one
+    ///   shape = list.Shape;            // shape will be an array with a single value 3, representing that the dimension 0 has 3 elements
+    /// 
+    ///                                  // Creates a 3D tensor, 
+    ///   TFTensor cube = new [,,] { {{1,2,3},{4,5,6}}}
+    ///   d = cube.NumDims               // d will be 3
+    ///   shape = list.Shape             // shape will be [1,2,3] which is the shape of the above 3D array
+    /// </code>
+    /// </example>
+    /// </remarks>
+    public class TFTensor : TFDisposable
 	{
 		/// <summary>
 		/// Signature that methods must conform to to be used to release memory that was passed to a manually allocated TFTensor
@@ -230,16 +257,35 @@ namespace TensorFlow
 			return new TFTensor (SetupTensor (TFDataType.Complex128, shape, data, start, count, size: 16));
 		}
 
-		/// <summary>
-		/// Creates a constant tensor from an array, the shape reflects the shape of the C# array and the underlying type reflects the C# type.
-		/// </summary>
-		public unsafe TFTensor (Array array)
-		{
-			if (array == null)
-				throw new ArgumentNullException (nameof (array));
-			// TODO: ensure that we do not have arrays of arrays.
+        /// <summary>
+        /// Creates a constant tensor from an array, the shape reflects the shape of the C# array and the underlying type reflects the C# type.
+        /// </summary>
+        public unsafe TFTensor(Array array)
+        {
+            if (array == null)
+                throw new ArgumentNullException(nameof(array));
+
+            // Ensure that, if we have arrays of arrays, we can handle them accordingly:
+            if (isJagged(array.GetType()))
+            {
+                Type elementType = getInnerMostType(array);
+                int[] length = getLength(array);
+                Array multidimensional = Array.CreateInstance(elementType, length);
+                Array flatten = deepFlatten(array);
+                Buffer.BlockCopy(flatten, 0, multidimensional, 0, flatten.Length * Marshal.SizeOf(elementType));
+                createFromMultidimensionalArrays(multidimensional);
+            }
+            else
+            {
+                createFromMultidimensionalArrays(array);
+            }
+        }
+
+        private unsafe void createFromMultidimensionalArrays(Array array)
+        {
+            // TODO: ensure that we do not have arrays of arrays.
             //int
-			Type t = array.GetType().GetElementType();
+            Type t = array.GetType().GetElementType();
 			TFDataType dt;
 			long size = 0;
             if (t == typeof(Boolean))
@@ -626,18 +672,18 @@ namespace TensorFlow
 			return new TFTensor (array);
 		}
 
-		// General purpose constructor, specifies data type and gets pointer to buffer
-		// Is the default good, one where we let the user provide their own deallocator, or should we make a copy in that case?
-		/// <summary>
-		/// Low-level tensor constructor that creates a tensor from a buffer pointed to by an IntPtr.
-		/// </summary>
-		/// <param name="dataType">Specifies the data type held by the tensor, as well as how to interpret the provided data.</param>
-		/// <param name="dims">Describes the tensor shape, an array that indicates .</param>
-		/// <param name="data">Pointer to the raw data that will be used to initialize the tensor.</param>
-		/// <param name="dataSize">The size of the data being passed in.</param>
-		/// <param name="deallocator">Deallocator method, it is invoked when the tensor is destroyed to release the data pointed to by <paramref name="data"/>.</param>
-		/// <param name="deallocatorData">An optional argument of data that is passed to the deallocator method when the tensor is destroyed, you can use this to pass context information.</param>
-		public TFTensor (TFDataType dataType, long [] dims, IntPtr data, size_t dataSize, Deallocator deallocator, IntPtr deallocatorData) : base (IntPtr.Zero)
+        // General purpose constructor, specifies data type and gets pointer to buffer
+        // Is the default good, one where we let the user provide their own deallocator, or should we make a copy in that case?
+        /// <summary>
+        /// Low-level tensor constructor that creates a tensor from a buffer pointed to by an IntPtr.
+        /// </summary>
+        /// <param name="dataType">Specifies the data type held by the tensor, as well as how to interpret the provided data.</param>
+        /// <param name="dims">Describes the tensor shape, an array that indicates .</param>
+        /// <param name="data">Pointer to the raw data that will be used to initialize the tensor.</param>
+        /// <param name="dataSize">The size of the data being passed in.</param>
+        /// <param name="deallocator">Deallocator method, it is invoked when the tensor is destroyed to release the data pointed to by <paramref name="data"/>.   On platforms like iOS (or other static compilation platforms), yiou must annotate the method specified in the deallocator with a <see cref="T:TensorFlow.MonoPInvokeCallbackAttribute"/>.</param>
+        /// <param name="deallocatorData">An optional argument of data that is passed to the deallocator method when the tensor is destroyed, you can use this to pass context information.</param>
+        public TFTensor (TFDataType dataType, long [] dims, IntPtr data, size_t dataSize, Deallocator deallocator, IntPtr deallocatorData) : base (IntPtr.Zero)
 		{
 			if (dims == null)
 				throw new ArgumentNullException ("dims");
@@ -757,37 +803,169 @@ namespace TensorFlow
 			}
 		}
 
-		static Type TypeFromTensorType (TFDataType type)
-		{
-			switch (type) {
-			case TFDataType.Float:
-				return typeof (float);
-			case TFDataType.Double:
-				return typeof (double);
-			case TFDataType.Int32:
-				return typeof (int);
-			case TFDataType.UInt8:
-				return typeof (byte);
-			case TFDataType.Int16:
-				return typeof (short);
-			case TFDataType.Int8:
-				return typeof (sbyte);
-			case TFDataType.String:
-				return typeof (TFString);
-			case TFDataType.Int64:
-				return typeof (long);
-			case TFDataType.Bool:
-				return typeof (bool);
-			case TFDataType.UInt16:
-				return typeof (ushort);
-			case TFDataType.Complex128:
-				return typeof (Complex);
-			default:
-				return null;
-			}
-		}
+        /// <summary>
+        /// Converts a <see cref="TFDataType"/> to a system type.
+        /// </summary>
+        /// <param name="type">The <see cref="TFDataType"/> to be converted.</param>
+        /// <returns>The system type corresponding to the given <paramref name="type"/>.</returns>
+        public static Type TypeFromTensorType(TFDataType type)
+        {
+            switch (type)
+            {
+                case TFDataType.Float:
+                    return typeof(float);
+                case TFDataType.Double:
+                    return typeof(double);
+                case TFDataType.Int32:
+                    return typeof(int);
+                case TFDataType.UInt8:
+                    return typeof(byte);
+                case TFDataType.Int16:
+                    return typeof(short);
+                case TFDataType.Int8:
+                    return typeof(sbyte);
+                case TFDataType.String:
+                    return typeof(TFString);
+                case TFDataType.Int64:
+                    return typeof(long);
+                case TFDataType.Bool:
+                    return typeof(bool);
+                case TFDataType.UInt16:
+                    return typeof(ushort);
+                case TFDataType.Complex128:
+                    return typeof(Complex);
+                default:
+                    return null;
+            }
+        }
 
-		static unsafe object FetchSimple (TFDataType dt, IntPtr data)
+        /// <summary>
+        /// Converts a system type to a <see cref="TFDataType"/>.
+        /// </summary>
+        /// <param name="type">The system type to be converted.</param>
+        /// <returns>The <see cref="TFDataType"/> corresponding to the given type.</returns>
+        public static TFDataType TensorTypeFromType(Type type)
+        {
+            if (type == typeof(float))
+                return TFDataType.Float;
+            if (type == typeof(double))
+                return TFDataType.Double;
+            if (type == typeof(int))
+                return TFDataType.Int32;
+            if (type == typeof(byte))
+                return TFDataType.UInt8;
+            if (type == typeof(short))
+                return TFDataType.Int16;
+            if (type == typeof(sbyte))
+                return TFDataType.Int8;
+            if (type == typeof(string))
+                return TFDataType.String;
+            if (type == typeof(long))
+                return TFDataType.Int64;
+            if (type == typeof(bool))
+                return TFDataType.Bool;
+            if (type == typeof(ushort))
+                return TFDataType.UInt16;
+            if (type == typeof(Complex))
+                return TFDataType.Complex128;
+
+            throw new ArgumentOutOfRangeException(nameof(type), $"The given type could not be mapped to an existing {nameof(TFDataType)}.");
+        }
+
+        internal static (TFDataType dt, long size) TensorTypeAndSizeFromType(Type t)
+        {
+            TFDataType dt;
+            long size = 0;
+            if (t == typeof(Boolean))
+            {
+                dt = TFDataType.Bool;
+                size = 1;
+            }
+            else if (t == typeof(SByte))
+            {
+                dt = TFDataType.Int8;
+                size = 1;
+            }
+            else if (t == typeof(Byte))
+            {
+                dt = TFDataType.UInt8;
+                size = 1;
+            }
+            else if (t == typeof(Int16))
+            {
+                dt = TFDataType.Int16;
+                size = 2;
+            }
+            else if (t == typeof(UInt16))
+            {
+                dt = TFDataType.UInt16;
+                size = 2;
+            }
+            else if (t == typeof(Int32))
+            {
+                dt = TFDataType.Int32;
+                size = 4;
+            }
+            else if (t == typeof(Int64))
+            {
+                dt = TFDataType.Int64;
+                size = 8;
+            }
+            else if (t == typeof(Single))
+            {
+                dt = TFDataType.Float;
+                size = 4;
+            }
+            else if (t == typeof(Double))
+            {
+                dt = TFDataType.Double;
+                size = 8;
+            }
+            else
+            {
+                if (t == typeof(Complex))
+                {
+                    dt = TFDataType.Complex128;
+                    size = 16;
+                }
+                else
+                    throw new ArgumentException($"The data type {t} is not supported");
+            }
+            return (dt, size);
+        }
+
+        internal static unsafe object FetchSimple(TFDataType dt, object data)
+        {
+            switch (dt)
+            {
+                case TFDataType.Float:
+                    return Convert.ToSingle(data);
+                case TFDataType.Double:
+                    return Convert.ToDouble(data);
+                case TFDataType.Int32:
+                    return Convert.ToInt32(data);
+                case TFDataType.UInt8:
+                    return Convert.ToByte(data);
+                case TFDataType.Int16:
+                    return Convert.ToInt16(data);
+                case TFDataType.Int8:
+                    return Convert.ToSByte(data);
+                case TFDataType.String:
+                    throw new NotImplementedException();
+                case TFDataType.Int64:
+                    return Convert.ToInt64(data);
+                case TFDataType.Bool:
+                    return Convert.ToBoolean(data);
+                case TFDataType.UInt16:
+                    return Convert.ToUInt16(data);
+                case TFDataType.Complex128:
+                    return (Complex)data;
+                default:
+                    return null;
+            }
+        }
+
+        static unsafe object FetchSimple (TFDataType dt, IntPtr data)
 		{
 			switch (dt) {
 			case TFDataType.Float:
@@ -816,8 +994,40 @@ namespace TensorFlow
 				return null;
 			}
 		}
-
-		unsafe static void Copy (IntPtr src, void* target, int size)
+        //used to create multidementional arrays / tensor with a constant value
+        internal static unsafe void Set(Array target, TFDataType dt, long[] shape, int[] idx, int level, object value)
+        {
+            if (level < shape.Length - 1)
+            {
+                for (idx[level] = 0; idx[level] < shape[level]; idx[level]++)
+                    Set(target, dt, shape, idx, level + 1, value);
+            }
+            else
+            {
+                for (idx[level] = 0; idx[level] < shape[level]; idx[level]++)
+                {
+                    switch (dt)
+                    {
+                        case TFDataType.Float:
+                        case TFDataType.Double:
+                        case TFDataType.Int32:
+                        case TFDataType.UInt8:
+                        case TFDataType.Int16:
+                        case TFDataType.Int8:
+                        case TFDataType.Int64:
+                        case TFDataType.Bool:
+                        case TFDataType.Complex128:
+                            target.SetValue(value, idx);
+                            break;
+                        case TFDataType.String:
+                            throw new NotImplementedException("String decoding not implemented for tensor vecotrs yet");
+                        default:
+                            throw new NotImplementedException();
+                    }
+                }
+            }
+        }
+        unsafe static void Copy (IntPtr src, void* target, int size)
 		{
 			NativeBinding.MemoryCopy((void*)src, target, size, size);
 		}
@@ -1080,22 +1290,181 @@ namespace TensorFlow
 			}
 		}
 
-		public override string ToString ()
-		{
-			var n = NumDims;
-			if (n == 0)
-				return GetValue ().ToString ();
+        /// <summary>
+        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:TensorFlow.TFTensor"/>.
+        /// </summary>
+        /// <returns>A <see cref="T:System.String"/> that represents the current <see cref="T:TensorFlow.TFTensor"/>.</returns>
+        public override string ToString()
+        {
+            var n = NumDims;
+            if (n == 0)
+                return GetValue().ToString();
 
-			StringBuilder sb = new StringBuilder ("[");
-			for (int i = 0; i < n; i++)
+            StringBuilder sb = new StringBuilder("[");
+            for (int i = 0; i < n; i++)
             {
-				sb.Append (TF_Dim (handle, i));
-				if (i + 1 < n)
-					sb.Append ("x");
-			}
-			sb.Append ("]");
-			return sb.ToString ();
-		}
-	}
+                sb.Append(TF_Dim(handle, i));
+                if (i + 1 < n)
+                    sb.Append("x");
+            }
+            sb.Append("]");
+            return sb.ToString();
+        }
 
-}	
+        private static int[] getLength(Array array, bool deep = true, bool max = false)
+        {
+            // This function gets the length of all dimensions in a multidimensional, jagged, or mixed array.
+            // https://github.com/accord-net/framework/blob/b4990721a61f03602d04c12b148215c7eca1b7ac/Sources/Accord.Math/Matrix/Matrix.Construction.cs#L1118
+            // Relicensed under the MIT license by the original author for inclusion in TensorFlowSharp and any derived projects, see the MIT license for details
+
+            if (array.Rank == 0)
+                return new int[0];
+
+            if (deep && isJagged(array))
+            {
+                if (array.Length == 0)
+                    return new int[0];
+
+                int[] rest;
+                if (!max)
+                {
+                    rest = getLength(array.GetValue(0) as Array, deep);
+                }
+                else
+                {
+                    // find the max
+                    rest = getLength(array.GetValue(0) as Array, deep);
+                    for (int i = 1; i < array.Length; i++)
+                    {
+                        int[] r = getLength(array.GetValue(i) as Array, deep);
+
+                        for (int j = 0; j < r.Length; j++)
+                        {
+                            if (r[j] > rest[j])
+                                rest[j] = r[j];
+                        }
+                    }
+                }
+
+                return new[] { array.Length }.Concat(rest).ToArray();
+            }
+
+            int[] vector = new int[array.Rank];
+            for (int i = 0; i < vector.Length; i++)
+                vector[i] = array.GetUpperBound(i) + 1;
+            return vector;
+        }
+
+        private static Array deepFlatten(Array array)
+        {
+            // This function converts multidimensional, jagged, or mixed arrays into a single unidimensional array (i.e. flattens the mixed array).
+            // https://github.com/accord-net/framework/blob/f78181b82eb6ee6cc7fd10d2a7a55334982c40df/Sources/Accord.Math/Matrix/Matrix.Common.cs#L1625
+            // Relicensed under the MIT license by the original author for inclusion in TensorFlowSharp and any derived projects, see the MIT license for details
+            int totalLength = getTotalLength(array, deep: true);
+            var elementType = getInnerMostType(array);
+            Array result = Array.CreateInstance(elementType, totalLength);
+
+            int k = 0;
+            foreach (object v in enumerateJagged(array))
+                result.SetValue(v, k++);
+            return result;
+        }
+
+        private static IEnumerable enumerateJagged(Array array)
+        {
+            // This function can enumerate all elements in a multidimensional ,jagged, or mixed array.
+            // From https://github.com/accord-net/framework/blob/b4990721a61f03602d04c12b148215c7eca1b7ac/Sources/Accord.Math/Matrix/Jagged.Construction.cs#L1202
+            // Relicensed under the MIT license by the original author for inclusion in TensorFlowSharp and any derived projects, see the MIT license for details
+            var arrays = new Stack<Array>();
+            var counters = new Stack<int>();
+
+            arrays.Push(array);
+            counters.Push(0);
+            int depth = 1;
+
+            Array a = array;
+            int i = 0;
+
+            while (arrays.Count > 0)
+            {
+                if (i >= a.Length)
+                {
+                    a = arrays.Pop();
+                    i = counters.Pop() + 1;
+                    depth--;
+                }
+                else
+                {
+                    Object e = a.GetValue(i);
+                    Array next = e as Array;
+                    if (next == null)
+                    {
+                        yield return e;
+                        i++;
+                    }
+                    else
+                    {
+                        arrays.Push(a);
+                        counters.Push(i);
+                        a = next;
+                        i = 0;
+                        depth++;
+                    }
+                }
+            }
+        }
+
+        private static int getTotalLength(Array array, bool deep = true, bool rectangular = true)
+        {
+            // From https://github.com/accord-net/framework/blob/b4990721a61f03602d04c12b148215c7eca1b7ac/Sources/Accord.Math/Matrix/Matrix.Construction.cs#L1087
+            // Relicensed under the MIT license by the original author for inclusion in TensorFlowSharp and any derived projects, see the MIT license for details
+            if (deep && isJagged(array.GetType()))
+            {
+                if (rectangular)
+                {
+                    int rest = getTotalLength(array.GetValue(0) as Array, deep);
+                    return array.Length * rest;
+                }
+                else
+                {
+                    int sum = 0;
+                    for (int i = 0; i < array.Length; i++)
+                        sum += getTotalLength(array.GetValue(i) as Array, deep);
+                    return sum;
+                }
+            }
+
+            return array.Length;
+        }
+
+        private static bool isJagged(Array array)
+        {
+            // From https://github.com/accord-net/framework/blob/f78181b82eb6ee6cc7fd10d2a7a55334982c40df/Sources/Accord.Math/Matrix/Matrix.Construction.cs#L1204
+            // Relicensed under the MIT license by the original author for inclusion in TensorFlowSharp and any derived projects, see the MIT license for details
+            if (array.Length == 0)
+                return array.Rank == 1;
+            return array.Rank == 1 && array.GetValue(0) is Array;
+        }
+
+        private static bool isJagged(Type type)
+        {
+            // From https://github.com/accord-net/framework/blob/eb371fbc540a41c1a711b6ab1ebd49889316e7f7/Sources/Accord.Math/Matrix/Matrix.Common.cs#L84
+            // Relicensed under the MIT license by the original author for inclusion in TensorFlowSharp and any derived projects, see the MIT license for details
+            return type.IsArray && type.GetElementType().IsArray;
+        }
+
+        private static Type getInnerMostType(Array array)
+        {
+            // From https://github.com/accord-net/framework/blob/eb371fbc540a41c1a711b6ab1ebd49889316e7f7/Sources/Accord.Math/Matrix/Matrix.Common.cs#L95
+            // Relicensed under the MIT license by the original author for inclusion in TensorFlowSharp and any derived projects, see the MIT license for details
+            Type type = array.GetType();
+
+            while (type.IsArray)
+                type = type.GetElementType();
+
+            return type;
+        }
+
+    }
+
+}
