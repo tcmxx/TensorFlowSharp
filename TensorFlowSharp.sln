@@ -26,6 +26,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TensorFlowSharp.Tests.UWP",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TensorFlowSharp.UWP", "TensorFlowSharp.UWP\TensorFlowSharp.UWP.csproj", "{53852C57-3554-4A03-96DD-A2C993CE045C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tensorflow.AndroidClass", "Tensorflow.AndroidClass\Tensorflow.AndroidClass.csproj", "{D99DC2CB-105E-4E36-B2E9-81B76C209815}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A6E9A29F-E57F-42AA-824C-9581B2783E5F} = {A6E9A29F-E57F-42AA-824C-9581B2783E5F}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -254,6 +259,26 @@ Global
 		{53852C57-3554-4A03-96DD-A2C993CE045C}.Release|x64.Build.0 = Release|x64
 		{53852C57-3554-4A03-96DD-A2C993CE045C}.Release|x86.ActiveCfg = Release|x86
 		{53852C57-3554-4A03-96DD-A2C993CE045C}.Release|x86.Build.0 = Release|x86
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Debug|ARM.Build.0 = Debug|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Debug|TensorFlowSharp.ActiveCfg = Debug|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Debug|TensorFlowSharp.Build.0 = Debug|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Debug|x64.Build.0 = Debug|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Debug|x86.Build.0 = Debug|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Release|ARM.ActiveCfg = Release|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Release|ARM.Build.0 = Release|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Release|TensorFlowSharp.ActiveCfg = Release|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Release|TensorFlowSharp.Build.0 = Release|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Release|x64.ActiveCfg = Release|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Release|x64.Build.0 = Release|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Release|x86.ActiveCfg = Release|Any CPU
+		{D99DC2CB-105E-4E36-B2E9-81B76C209815}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -264,6 +289,9 @@ Global
 		{168FCD67-DF92-4905-A8F3-230856F9628E} = {20AF6B79-D9AF-42EB-A953-8E4039824D43}
 		{F710D1C4-0C47-4F51-AA52-C20BFBE49E19} = {20AF6B79-D9AF-42EB-A953-8E4039824D43}
 		{69A8153D-4BA4-41DE-BB1E-C9F473FFD185} = {20AF6B79-D9AF-42EB-A953-8E4039824D43}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FE1F59DA-B4E9-45E1-84DF-47E6D1CE30D0}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
